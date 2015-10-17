@@ -22,13 +22,41 @@
 #include "Token.h"
 
 using namespace std;
+ifstream fin("input.txt");
+
+int lineCounter = 1;
+int columnCounter = 1;
+
+void nextSym (char &b)
+{
+	if (b == ' ')
+	{
+		columnCounter++;
+		if (!fin.eof()) fin.get(b);
+	}
+	else if (b == '\t')
+	{
+		columnCounter += 5 - columnCounter % 4;
+		if (!fin.eof()) fin.get(b);
+	}
+	else if (b == '\n')
+	{
+		lineCounter++;
+		columnCounter = 1;
+		if (!fin.eof()) fin.get(b);
+	}
+	else
+	{
+		columnCounter++;
+		if (!fin.eof()) fin.get(b);
+	}
+}
 
 int main()
 {
-	ifstream fin("input.txt");
+
 	char b;
-	int lineCounter = 1;
-	int columnCounter = 1;
+
 	int currColumn;
 	string lexeme = "";
 	fin.get(b);
@@ -42,8 +70,7 @@ int main()
 			while (isalnum(b) && !fin.eof())
 			{
 				lexeme += b;
-				columnCounter++;
-				fin.get(b);
+				nextSym(b);
 			}
 			Token indToken = Token (lineCounter, currColumn, ABTypes(lexeme), lexeme);
 			indToken.PrintToken();
@@ -52,11 +79,15 @@ int main()
 		{
 			currColumn = columnCounter;
 			lexeme = "";
-			while (isdigit(b) && !fin.eof())
+			bool real = false;
+			while ((isdigit(b) || b == '.')&& !fin.eof())
 			{
 				lexeme += b;
-				columnCounter++;
-				fin.get(b);
+				if (b == '.')
+				{
+
+				}
+				nextSym(b);
 			}
 			int value;
 			istringstream lex(lexeme);
@@ -64,25 +95,8 @@ int main()
 			TokenVal<int> intToken = TokenVal<int>(lineCounter, currColumn, castType(integer), lexeme, value);
 			intToken.PrintToken();
 		}
-		if (b == ' ')
-		{
-			columnCounter++;
-			if (!fin.eof()) fin.get(b);
-		}
-		if (b == '\t')
-		{
-			columnCounter += 5 - columnCounter % 4;
-			if (!fin.eof()) fin.get(b);
-		}
-		if (b == '\n')
-		{
-			lineCounter++;
-			columnCounter = 1;
-			if (!fin.eof()) fin.get(b);
-		}
+		nextSym(b);
 	}
-
-
 
 	return 0;
 }
