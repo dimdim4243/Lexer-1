@@ -13,14 +13,17 @@ string lower(string a){
     std::transform(a.begin(), a.end(), a.begin(), ::tolower);
     return  a;
 }
-#define kw(k) {lower(#k) , 1 },
-#define optr(o) {lower(#o) , 2},
-map<string,int> ABLex =
-{
-#include "Keywords.h"
-};
+
+#define kw(k) m[lower(#k)] = 1;
+#define optr(o) m[lower(#o)] = 2;
+map<string,int> map_init(){
+    map<string,int> m;   
+    #include "Keywords.h"
+    return m;
+}
 #undef kw
 #undef optr
+map<string,int> ABLex = map_init();
 
 #define kw(k) k,
 #define optr(t) t,
