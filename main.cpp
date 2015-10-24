@@ -32,6 +32,23 @@ void NextSym (char &b)
 	columnCounter++;
 	if (!fin.eof()) fin.get(b);
 }
+
+int stoi (string s)
+{
+	int b;
+	istringstream str(s);
+	str >> b;
+	return b;
+}
+
+float stor (string s)
+{
+	float b;
+	istringstream str(s);
+	str >> b;
+	return b;
+}
+
 void CountLaC(char &b)
 {
 	if (b == ' ')
@@ -79,21 +96,56 @@ int main()
 		{
 			currColumn = columnCounter;
 			lexeme = "";
-			bool real = false;
-			while ((isdigit(b) || b == '.')&& !fin.eof())
+			bool isReal = false;
+			bool printed = false;
+			while ((isdigit(b) || b == '.') && !fin.eof() && !printed)
 			{
-				lexeme += b;
 				if (b == '.')
 				{
+					string buff = ".";
+					NextSym(b);
+					if (b == '.')
+					{
+						TokenVal<int> tokInt = TokenVal<int>(lineCounter, currColumn, castType(integer), lexeme, stoi(lexeme));
+						tokInt.PrintToken();
+						printed = true;
+						buff += b;
+						Token twoDots = Token(lineCounter, columnCounter - 1, castType(sep), buff);
+						twoDots.PrintToken();
+						NextSym(b);
+					}
+					else if (isdigit(b))
+					{
+						lexeme += buff;
+						isReal = true;
+					}
+					else
+					{
+						TokenVal<int> tokInt = TokenVal<int>(lineCounter, currColumn, castType(integer), lexeme, stoi(lexeme));
+						tokInt.PrintToken();
+						printed = true;
+						Token dot = Token(lineCounter, columnCounter - 1, castType(sep), buff);
+						dot.PrintToken();
+					}
 
 				}
+				lexeme += b;
 				if (!printed) NextSym(b);
 			}
-			int value;
-			istringstream lex(lexeme);
-			lex >> value;
-			TokenVal<int> intToken = TokenVal<int>(lineCounter, currColumn, castType(integer), lexeme, value);
-			intToken.PrintToken();
+			if (!printed)
+			{
+				if (isReal)
+				{
+					TokenVal<float> numToken = TokenVal<float>(lineCounter, currColumn, castType(real), lexeme, stor(lexeme));
+					numToken.PrintToken();
+				}
+				else
+				{
+					TokenVal<int> numToken = TokenVal<int>(lineCounter, currColumn, castType(integer), lexeme, stoi(lexeme));
+					numToken.PrintToken();
+				}
+
+			}
 		}
 		CountLaC(b);
 	}
