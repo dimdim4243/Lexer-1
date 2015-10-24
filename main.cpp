@@ -41,12 +41,14 @@ int stoi (string s)
 	return b;
 }
 
-float stor (string s)
+string stor (string s)
 {
 	float b;
 	istringstream str(s);
 	str >> b;
-	return b;
+	char buff[100];
+	sprintf(buff, "%.4E", b);
+	return buff;
 }
 
 void CountLaC(char &b)
@@ -136,7 +138,7 @@ int main()
 			{
 				if (isReal)
 				{
-					TokenVal<float> numToken = TokenVal<float>(lineCounter, currColumn, castType(real), lexeme, stor(lexeme));
+					TokenVal<string> numToken = TokenVal<string>(lineCounter, currColumn, castType(real), lexeme, stor(lexeme));
 					numToken.PrintToken();
 				}
 				else

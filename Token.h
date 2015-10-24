@@ -5,6 +5,7 @@
 #include "stdlib.h"
 #include <algorithm>
 #include <map>
+#include <set>
 using namespace std;
 
 ofstream fout("output.txt");
@@ -24,6 +25,14 @@ map<string,int> map_init(){
 #undef kw
 #undef optr
 map<string,int> ABLex = map_init();
+
+//set<string> kws;
+//set<string> opts;
+//#define kw(k) kws.insert(#k);
+//#define optr(o) opts.insert(#o);
+//#include "Keywords.h"
+//#undef kw
+//#undef optr
 
 #define kw(k) k,
 #define optr(t) t,
