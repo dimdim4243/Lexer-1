@@ -27,7 +27,12 @@ ifstream fin("input.txt");
 int lineCounter = 1;
 int columnCounter = 1;
 
-void nextSym (char &b)
+void NextSym (char &b)
+{
+	columnCounter++;
+	if (!fin.eof()) fin.get(b);
+}
+void CountLaC(char &b)
 {
 	if (b == ' ')
 	{
@@ -43,11 +48,6 @@ void nextSym (char &b)
 	{
 		lineCounter++;
 		columnCounter = 1;
-		if (!fin.eof()) fin.get(b);
-	}
-	else
-	{
-		columnCounter++;
 		if (!fin.eof()) fin.get(b);
 	}
 }
@@ -70,7 +70,7 @@ int main()
 			while (isalnum(b) && !fin.eof())
 			{
 				lexeme += b;
-				nextSym(b);
+				NextSym(b);
 			}
 			Token indToken = Token (lineCounter, currColumn, ABTypes(lexeme), lexeme);
 			indToken.PrintToken();
@@ -87,7 +87,7 @@ int main()
 				{
 
 				}
-				nextSym(b);
+				if (!printed) NextSym(b);
 			}
 			int value;
 			istringstream lex(lexeme);
@@ -95,7 +95,7 @@ int main()
 			TokenVal<int> intToken = TokenVal<int>(lineCounter, currColumn, castType(integer), lexeme, value);
 			intToken.PrintToken();
 		}
-		nextSym(b);
+		CountLaC(b);
 	}
 
 	return 0;
