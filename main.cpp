@@ -130,7 +130,6 @@ int main()
 						Token dot = Token(lineCounter, columnCounter - 1, castType(sep), buff);
 						dot.PrintToken();
 					}
-
 				}
 				lexeme += b;
 				if (!printed) NextSym(b);
@@ -147,7 +146,6 @@ int main()
 					TokenVal<int> numToken = TokenVal<int>(lineCounter, currColumn, castType(integer), lexeme, stoi(lexeme));
 					numToken.PrintToken();
 				}
-
 			}
 		}
 		CountLaC(b);

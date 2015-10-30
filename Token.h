@@ -6,73 +6,20 @@
 #include <algorithm>
 #include <map>
 #include <set>
+
 using namespace std;
+
+#include "Sets.h"
 
 ofstream fout("output.txt");
 
-string lower(string a){
-    std::transform(a.begin(), a.end(), a.begin(), ::tolower);
-    return  a;
-}
 
-#define kw(k) m[lower(#k)] = 1;
-#define optr(o) m[lower(#o)] = 2;
-map<string,int> map_init(){
-    map<string,int> m;   
-    #include "Keywords.h"
-    return m;
-}
-#undef kw
-#undef optr
-map<string,int> ABLex = map_init();
-
-//set<string> kws;
-//set<string> opts;
-//#define kw(k) kws.insert(#k);
-//#define optr(o) opts.insert(#o);
-//#include "Keywords.h"
-//#undef kw
-//#undef optr
-
-#define kw(k) k,
-#define optr(t) t,
-enum TYPES
-{
-    _string,
-    character,
-    integer,
-    _hex,
-    real,
-    indent,
-    op,
-    sep,
-    keyword,
-    #include "Keywords.h"
-};
-#undef kw
-#undef optr
-
-string castType (TYPES type)
-{
-	switch (type)
-	{
-		case _string:   return "string";    break;
-		case character: return "char";      break;
-		case integer:   return "integer";   break;
-		case _hex:      return "hex";       break;
-		case real:      return "real";      break;
-		case op:        return "op";        break;
-		case indent:    return "indent";    break;
-		case sep:       return "sep";       break;
-		case keyword:   return "keyword";   break;
-	}
-}
 
 string ABTypes(string word)
 {
-    if (ABLex[word] == 1)
+    if (kws.count(word) != 0)
         return castType(keyword);
-    else if (ABLex[word] == 2)
+    else if (ops.count(word) != 0)
         return castType(op);
     else
         return castType(indent);
