@@ -43,8 +43,18 @@ set<string> set_op()
 }
 #undef kw
 #undef optr
+
 set<string> kws = set_kws();
 set<string> ops = set_op();
+
+bool isop(char b, bool first)
+{
+	for(set<string>::iterator it = ops.begin(); it != ops.end(); it++)
+	{
+		if (first && !isalpha(b) && (b == it.operator*()[0])) return true;
+		if (!first && !isalpha(b) && (b == it.operator*()[1])) return true;
+	}
+}
 
 #define kw(k) k,
 #define optr(t) t,

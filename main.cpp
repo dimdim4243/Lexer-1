@@ -95,6 +95,24 @@ int main()
 			Token indToken = Token (lineCounter, currColumn, ABTypes(lexeme), lexeme);
 			indToken.PrintToken();
 		}
+		if (isop(b, 1))
+		{
+			string buff;
+			buff += b;
+			NextSym(b);
+			if (isop(b, 0))
+			{
+				buff += b;
+				Token opToken = Token(lineCounter, columnCounter - 1, castType(op), buff);
+				opToken.PrintToken();
+				NextSym(b);
+			}
+			else
+			{
+				Token opToken = Token(lineCounter, columnCounter - 1, castType(op), buff);
+				opToken.PrintToken();
+			}
+		}
 		if (isdigit(b))
 		{
 			currColumn = columnCounter;
