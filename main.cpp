@@ -47,7 +47,8 @@ string stor (string s)
 	istringstream str(s);
 	str >> b;
 	char buff[100];
-	sprintf(buff, "%.4E", b);
+	if (b != 0) sprintf(buff, "%.4E", b);
+	else sprintf(buff, "0");
 	return buff;
 }
 
