@@ -127,7 +127,7 @@ int main()
 						TokenVal<int> tokInt = TokenVal<int>(lineCounter, currColumn, castType(integer), lexeme, stoi(lexeme));
 						tokInt.PrintToken();
 						printed = true;
-						Token dot = Token(lineCounter, columnCounter - 1, castType(sep), buff);
+						Token dot = Token(lineCounter, columnCounter - 1, castType(op), buff);
 						dot.PrintToken();
 					}
 				}
