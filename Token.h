@@ -15,8 +15,6 @@ using namespace std;
 
 ofstream fout("output.txt");
 
-
-
 string ABTypes(string word)
 {
     if (kws.count(word) != 0)
@@ -27,6 +25,31 @@ string ABTypes(string word)
         return castType(indent);
 }
 
+class TokenError
+{
+protected:
+    int line;
+    int column;
+    string type;
+public:
+    TokenError(){}
+    TokenError(int linem, int column, string type);
+    void PrintToken();
+};
+
+void TokenError :: PrintToken ()
+{
+    fout << this->line << "\t"
+    << this->column << "\t"
+    << this->type;
+}
+
+TokenError ::TokenError(int linem, int column, string type)
+{
+    this->line = line;
+    this->column = column;
+    this->type = type;
+}
 
 class Token
 {

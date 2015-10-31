@@ -76,10 +76,11 @@ int main()
 	char b;
 
 	int currColumn;
+	bool error = false;
 	string lexeme = "";
 	fin.get(b);
 
-	while (!fin.eof())
+	while (!fin.eof() && !error)
 	{
 		if (isalpha(b))
 		{
@@ -140,11 +141,15 @@ int main()
 					}
 					else
 					{
-						TokenVal<int> tokInt = TokenVal<int>(lineCounter, currColumn, castType(integer), lexeme, stoi(lexeme));
-						tokInt.PrintToken();
+//						TokenVal<int> tokInt = TokenVal<int>(lineCounter, currColumn, castType(integer), lexeme, stoi(lexeme));
+//						tokInt.PrintToken();
+//						printed = true;
+//						Token dot = Token(lineCounter, columnCounter - 1, castType(op), buff);
+//						dot.PrintToken();
+						TokenError err = TokenError(lineCounter, columnCounter, "NoFract");
+						error = true;
 						printed = true;
-						Token dot = Token(lineCounter, columnCounter - 1, castType(op), buff);
-						dot.PrintToken();
+						err.PrintToken();
 					}
 				}
 				lexeme += b;
