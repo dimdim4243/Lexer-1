@@ -13,8 +13,6 @@ using namespace std;
 
 #include "Sets.h"
 
-ofstream fout("output.txt");
-
 string ABTypes(string word)
 {
     if (kws.count(word) != 0)
@@ -23,32 +21,6 @@ string ABTypes(string word)
         return castType(op);
     else
         return castType(indent);
-}
-
-class TokenError
-{
-protected:
-    int line;
-    int column;
-    string type;
-public:
-    TokenError(){}
-    TokenError(int linem, int column, string type);
-    void PrintToken();
-};
-
-void TokenError :: PrintToken ()
-{
-    fout << this->line << "\t"
-    << this->column << "\t"
-    << this->type;
-}
-
-TokenError ::TokenError(int linem, int column, string type)
-{
-    this->line = line;
-    this->column = column;
-    this->type = type;
 }
 
 class Token
@@ -61,8 +33,14 @@ protected:
 public:
     Token() {}
     Token(int line, int column, string type, string lexeme);
-    void  PrintToken ();
+    virtual void  PrintToken ();
+	bool null();
 };
+
+bool Token::null()
+{
+	return this->type.empty();
+}
 
 Token :: Token(int line, int column, string type, string lexeme)
 {
@@ -74,12 +52,38 @@ Token :: Token(int line, int column, string type, string lexeme)
 
 void Token :: PrintToken ()
 {
+	ofstream fout("output.txt", ios_base::app);
+	fout << fixed << setprecision(10);
 	fout << this->line << "\t"
 	<< this->column << "\t"
 	<< this->type << "\t"
 	<< this->lexeme	<< "\n";
 }
 
+
+class TokenError: public Token
+{
+public:
+	TokenError(int line, int column, string type);
+	void PrintToken();
+};
+
+void TokenError :: PrintToken ()
+{
+
+	ofstream fout("output.txt", ios_base::app);
+	fout << fixed << setprecision(10);
+	fout << this->line << "\t"
+	<< this->column << "\t"
+	<< this->type;
+}
+
+TokenError :: TokenError(int line, int column, string type)
+{
+	this->line = line;
+	this->column = column;
+	this->type = type;
+}
 
 template <typename Value>
 class TokenVal: public Token
@@ -105,6 +109,8 @@ TokenVal<Value> :: TokenVal(int line, int column, string type, string lexeme, Va
 template <typename Value>
 void TokenVal<Value> :: PrintToken()
 {
+	ofstream fout("output.txt", ios_base::app);
+	fout << fixed << setprecision(10);
     fout << this->line << "\t"
     << this->column << "\t"
     << this->type << "\t"
