@@ -1,11 +1,13 @@
 #ifndef TOKEN
 #define TOKEN
+#include <iostream>
 #include <fstream>
 #include <string>
 #include "stdlib.h"
 #include <algorithm>
 #include <map>
 #include <set>
+#include <iomanip>
 
 using namespace std;
 

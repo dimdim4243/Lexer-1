@@ -17,7 +17,6 @@
 символьна€_литера  Ч #[{число}{шестнадцатеричное_число}]
 строка  Ч '{символ}*'
 */
-#include <iostream>
 #include <sstream>
 #include "Token.h"
 
@@ -41,15 +40,12 @@ int stoi (string s)
 	return b;
 }
 
-string stor (string s)
+float stor (string s)
 {
 	float b;
 	istringstream str(s);
 	str >> b;
-	char buff[100];
-	if (b != 0) sprintf(buff, "%.4E", b);
-	else sprintf(buff, "0");
-	return buff;
+	return b;
 }
 
 void CountLaC(char &b)
@@ -74,6 +70,8 @@ void CountLaC(char &b)
 
 int main()
 {
+	fout.flags(ios::scientific | ios::uppercase);
+	fout << setprecision(4);
 
 	char b;
 
@@ -156,7 +154,7 @@ int main()
 			{
 				if (isReal)
 				{
-					TokenVal<string> numToken = TokenVal<string>(lineCounter, currColumn, castType(real), lexeme, stor(lexeme));
+					TokenVal<float> numToken = TokenVal<float>(lineCounter, currColumn, castType(real), lexeme, stor(lexeme));
 					numToken.PrintToken();
 				}
 				else
