@@ -17,7 +17,6 @@
 символьна€_литера  Ч #[{число}{шестнадцатеричное_число}]
 строка  Ч '{символ}*'
 */
-#include <sstream>
 #include "Token.h"
 
 using namespace std;

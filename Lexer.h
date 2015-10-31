@@ -34,9 +34,9 @@ Token* TokenBuff::pop()
 class Lexer
 {
 private:
-	int lineCounter = 1;
-	int columnCounter = 0;
-	int currColumn = 0;
+	int lineCounter;
+	int columnCounter;
+	int currColumn;
 	char b;
 	string lexeme;
 	ifstream fin;
@@ -45,8 +45,8 @@ public:
 	Lexer() {};
 	Lexer(string stream);
 	void NextSym(char &b);
-	int stoi (string s);
-	double stor (string s);
+	int static stoi (string s);
+	double static stor (string s);
 	void CountLaC(char &b);
 	Token* GetToken();
 };
@@ -54,6 +54,9 @@ public:
 Lexer::Lexer(string file)
 {
 	fin.open(file);
+	lineCounter = 1;
+	columnCounter = 0;
+	currColumn = 0;
 	NextSym(b);
 }
 
@@ -119,12 +122,14 @@ Token* Lexer::GetToken()
 		}
 		return new Token(lineCounter, currColumn, ABTypes(lexeme), lexeme);
 	}
-	if(isop(b, 1))
+	if(isop(&b, 1))
 	{
 		string buff;
+		char opr[2] = {b};
 		buff += b;
 		NextSym(b);
-		if (isop(b, 0))
+		opr[1] = b;
+		if (isop(opr, 0))
 		{
 			buff += b;
 			NextSym(b);

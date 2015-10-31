@@ -47,12 +47,12 @@ set<string> set_op()
 set<string> kws = set_kws();
 set<string> ops = set_op();
 
-bool isop(char b, bool first)
+bool isop(char* b, bool first)
 {
 	for(set<string>::iterator it = ops.begin(); it != ops.end(); it++)
 	{
-		if (first && !isalpha(b) && (b == it.operator*()[0])) return true;
-		if (!first && !isalpha(b) && (b == it.operator*()[1])) return true;
+		if (!isalpha(b[0]) && (first && it.operator*()[0] == b[0])) return true;
+		if (!first && it.operator*()[0] == b[0] && it.operator*()[1] == b[1]) return true;
 	}
 }
 
