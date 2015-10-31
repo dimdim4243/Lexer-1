@@ -4,26 +4,28 @@
 
 struct TokenBuff
 {
-	Token t;
-	bool empty = true;
+	Token* t;
+	bool empty;
 	TokenBuff();
-	TokenBuff(Token t);
-	void push(Token t);
-	Token pop();
+	TokenBuff(Token* t);
+	void push(Token* t);
+	Token* pop();
 };
-
-TokenBuff::TokenBuff() {}
-TokenBuff::TokenBuff(Token t)
+TokenBuff::TokenBuff()
+{
+	empty = true;
+}
+TokenBuff::TokenBuff(Token* t)
 {
 	this->t = t;
 	empty = false;
 }
-void TokenBuff::push(Token t)
+void TokenBuff::push(Token* t)
 {
 	this->t = t;
 	empty = false;
 }
-Token TokenBuff::pop()
+Token* TokenBuff::pop()
 {
 	empty = true;
 	return t;
@@ -46,7 +48,7 @@ public:
 	int stoi (string s);
 	double stor (string s);
 	void CountLaC(char &b);
-	Token GetToken();
+	Token* GetToken();
 };
 
 Lexer::Lexer(string file)
@@ -97,10 +99,13 @@ void Lexer::CountLaC(char &b)
 	}
 }
 
-Token Lexer::GetToken()
+Token* Lexer::GetToken()
 {
 	if (!buffer.empty) return buffer.pop();
-	if (fin.eof()) return Token();
+	if (fin.eof())
+	{
+		return new Token();
+	}
 	CountLaC(b);
 	lexeme = "";
 	if (isalpha(b))
@@ -112,7 +117,7 @@ Token Lexer::GetToken()
 			lexeme += b;
 			NextSym(b);
 		}
-		return Token(lineCounter, currColumn, ABTypes(lexeme), lexeme);
+		return new Token(lineCounter, currColumn, ABTypes(lexeme), lexeme);
 	}
 	if(isop(b, 1))
 	{
@@ -123,11 +128,11 @@ Token Lexer::GetToken()
 		{
 			buff += b;
 			NextSym(b);
-			return Token(lineCounter, columnCounter - 1, castType(op), buff);
+			return new Token(lineCounter, columnCounter - 1, castType(op), buff);
 		}
 		else
 		{
-			return Token(lineCounter, columnCounter - 1, castType(op), buff);
+			return new Token(lineCounter, columnCounter - 1, castType(op), buff);
 		}
 	}
 	if (isdigit(b))
@@ -143,9 +148,9 @@ Token Lexer::GetToken()
 				if (b == '.')
 				{
 					Token twoDots(lineCounter, columnCounter - 1, castType(sep), "..");
-					buffer.push(twoDots);
+					buffer.push(&twoDots);
 					NextSym(b);
-					return TokenVal<int>(lineCounter, currColumn, castType(integer), lexeme, stoi(lexeme));
+					return new TokenVal<int>(lineCounter, currColumn, castType(integer), lexeme, stoi(lexeme));
 				}
 				else if (isdigit(b))
 				{
@@ -153,16 +158,16 @@ Token Lexer::GetToken()
 				}
 				else
 				{
-					return TokenError(lineCounter, columnCounter, "NoFract");
+					return new TokenError(lineCounter, columnCounter, "NoFract");
 				}
 			}
 			lexeme += b;
 			NextSym(b);
 		}
-		if (r) return TokenVal<double>(lineCounter, currColumn, castType(real), lexeme, stor(lexeme));
-		else return TokenVal<int>(lineCounter, currColumn, castType(integer), lexeme, stoi(lexeme));
+		if (r) return new TokenVal<double>(lineCounter, currColumn, castType(real), lexeme, stor(lexeme));
+		else return new TokenVal<int>(lineCounter, currColumn, castType(integer), lexeme, stoi(lexeme));
 	}
-	return Token();
+	return new Token();
 }
 
 

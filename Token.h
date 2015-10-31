@@ -12,6 +12,7 @@
 using namespace std;
 
 #include "Sets.h"
+ofstream fout("output.txt");
 
 string ABTypes(string word)
 {
@@ -39,7 +40,7 @@ public:
 
 bool Token::null()
 {
-	return this->type.empty();
+	return type.empty();
 }
 
 Token :: Token(int line, int column, string type, string lexeme)
@@ -52,12 +53,10 @@ Token :: Token(int line, int column, string type, string lexeme)
 
 void Token :: PrintToken ()
 {
-	ofstream fout("output.txt", ios_base::app);
-	fout << fixed << setprecision(10);
-	fout << this->line << "\t"
-	<< this->column << "\t"
-	<< this->type << "\t"
-	<< this->lexeme	<< "\n";
+	fout << line << "\t"
+	<< column << "\t"
+	<< type << "\t"
+	<< lexeme	<< "\n";
 }
 
 
@@ -70,12 +69,9 @@ public:
 
 void TokenError :: PrintToken ()
 {
-
-	ofstream fout("output.txt", ios_base::app);
-	fout << fixed << setprecision(10);
-	fout << this->line << "\t"
-	<< this->column << "\t"
-	<< this->type;
+	fout << line << "\t"
+	<< column << "\t"
+	<< type;
 }
 
 TokenError :: TokenError(int line, int column, string type)
@@ -109,13 +105,11 @@ TokenVal<Value> :: TokenVal(int line, int column, string type, string lexeme, Va
 template <typename Value>
 void TokenVal<Value> :: PrintToken()
 {
-	ofstream fout("output.txt", ios_base::app);
-	fout << fixed << setprecision(10);
-    fout << this->line << "\t"
-    << this->column << "\t"
-    << this->type << "\t"
-    << this->lexeme << "\t"
-    << this->value << "\n";
+    fout << line << "\t"
+    << column << "\t"
+    << type << "\t"
+    << lexeme << "\t"
+    << value << "\n";
 }
 
 

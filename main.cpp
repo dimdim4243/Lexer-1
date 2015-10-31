@@ -26,11 +26,12 @@ using namespace std;
 
 int main()
 {
-	ofstream fout("output.txt", ios::trunc);
+	fout.flags(ios::scientific | ios::uppercase);
+	fout << setprecision(4);
 	Lexer myLexer("input.txt");
-	for (Token i = myLexer.GetToken(); !i.null(); i = myLexer.GetToken())
+	for (Token* i = myLexer.GetToken(); !i->null(); i = myLexer.GetToken())
 	{
-		i.PrintToken();
+		i->PrintToken();
 	}
 
 	return 0;
