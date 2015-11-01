@@ -88,17 +88,20 @@ void Lexer::CountLaC(char &b)
 	if (b == ' ')
 	{
 		NextSym(b);
+		CountLaC(b);
 	}
 	else if (b == '\t')
 	{
-		columnCounter += 5 - columnCounter % 4;
+		columnCounter += 4 - (columnCounter - 1) % 4;
 		if (!fin.eof()) fin.get(b);
+		CountLaC(b);
 	}
 	else if (b == '\n')
 	{
 		lineCounter++;
 		columnCounter = 1;
 		if (!fin.eof()) fin.get(b);
+		CountLaC(b);
 	}
 }
 
