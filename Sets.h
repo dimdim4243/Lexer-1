@@ -65,7 +65,7 @@ enum TYPES
 	integer,
 	_hex,
 	real,
-	indent,
+	ident,
 	op,
 	sep,
 	keyword,
@@ -85,7 +85,7 @@ string castType (TYPES type)
 		case _hex:      return "hex";
 		case real:      return "real";
 		case op:        return "op";
-		case indent:    return "indent";
+		case ident:    return "ident";
 		case sep:       return "sep";
 		case keyword:   return "keyword";
 	}

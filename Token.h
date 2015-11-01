@@ -22,7 +22,7 @@ string ABTypes(string word)
     else if (ops.count(word) != 0)
         return castType(op);
     else
-        return castType(indent);
+        return castType(ident);
 }
 
 class Token
