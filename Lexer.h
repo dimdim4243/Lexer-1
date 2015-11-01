@@ -111,11 +111,11 @@ Token* Lexer::GetToken()
 	}
 	CountLaC(b);
 	lexeme = "";
-	if (isalpha(b))
+	if (isalpha(b) || b == '_')
 	{
 		currColumn = columnCounter;
 		lexeme = "";
-		wneof(isalnum(b))
+		wneof(isalnum(b) || b == '_')
 		{
 			lexeme += b;
 			NextSym(b);
