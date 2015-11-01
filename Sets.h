@@ -7,6 +7,7 @@ string lower(string a){
 }
 #define kw(k) s.insert(lower(#k));
 #define optr(o)
+#define sop(s, t)
 set<string> set_kws()
 {
 	set<string> s;
@@ -15,34 +16,21 @@ set<string> set_kws()
 }
 #undef kw
 #undef optr
+#undef sop
+
 #define kw(k)
 #define optr(o) s.insert(lower(#o));
+#define sop(r, t) s.insert(r);
 set<string> set_op()
 {
 	set<string> s;
 #include "Keywords.h"
-	s.insert("+");
-	s.insert("-");
-	s.insert("*");
-	s.insert("/");
-	s.insert("^");
-	s.insert("-=");
-	s.insert("+=");
-	s.insert("*=");
-	s.insert("/=");
-	s.insert(">");
-	s.insert("<");
-	s.insert("<=");
-	s.insert(">=");
-	s.insert("=");
-	s.insert("<>");
-	s.insert(":=");
-	s.insert("@");
-	s.insert(".");
+
 	return s;
 }
 #undef kw
 #undef optr
+#undef sop
 
 set<string> kws = set_kws();
 set<string> ops = set_op();
@@ -58,6 +46,7 @@ bool isop(char* b, bool first)
 
 #define kw(k) k,
 #define optr(t) t,
+#define sop(s, t) t,
 enum TYPES
 {
 	_string,
@@ -73,6 +62,7 @@ enum TYPES
 };
 #undef kw
 #undef optr
+#undef sop
 
 
 string castType (TYPES type)
