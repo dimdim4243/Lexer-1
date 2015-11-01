@@ -38,6 +38,7 @@ private:
 	int columnCounter;
 	int currColumn;
 	char b;
+	bool error;
 	string lexeme;
 	ifstream fin;
 	TokenBuff buffer;
@@ -53,6 +54,7 @@ public:
 
 Lexer::Lexer(string file)
 {
+	error = false;
 	fin.open(file);
 	lineCounter = 1;
 	columnCounter = 0;
@@ -108,10 +110,7 @@ void Lexer::CountLaC(char &b)
 Token* Lexer::GetToken()
 {
 	if (!buffer.empty) return buffer.pop();
-	if (fin.eof())
-	{
-		return new Token();
-	}
+	if (fin.eof() || error) return new Token();
 	CountLaC(b);
 	lexeme = "";
 	if (isalpha(b) || b == '_')
@@ -166,6 +165,7 @@ Token* Lexer::GetToken()
 				}
 				else
 				{
+					error = true;
 					return new TokenError(lineCounter, columnCounter, "NoFract");
 				}
 			}
