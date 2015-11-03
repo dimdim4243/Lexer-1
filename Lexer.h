@@ -98,7 +98,7 @@ int Lexer::shtoi(string s)
 
 bool Lexer::ishex(char b)
 {
-	return (b > 47 && b < 58) || (b > 64 && b < 71) || (b > 96 && b < 103);
+	return b >= '0' && b <= '9' || b >= 'a' && b <= 'f' || b >= 'A' && b <= 'F';
 }
 
 void Lexer::CountLaC(char &b)
