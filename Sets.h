@@ -14,7 +14,7 @@ set<string> set_kws()
 }
 #undef kw
 
-#define sep(s, t) s.insert(s);
+#define sep(str, t) s.insert(str);
 set<string> set_sep()
 {
 	set<string> s;
