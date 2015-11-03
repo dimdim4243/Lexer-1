@@ -48,6 +48,7 @@ public:
 	void NextSym(char &b);
 	bool ishex(char b);
 	int static stoi (string s);
+	int static shtoi (string s);
 	double static stor (string s);
 	void CountLaC(char &b);
 	Token* GetToken();
@@ -83,6 +84,15 @@ double Lexer::stor(string s)
 	float b;
 	istringstream str(s);
 	str >> b;
+	return b;
+}
+
+int Lexer::shtoi(string s)
+{
+	int b;
+	istringstream str(s);
+	str.get();
+	str >> hex >> b;
 	return b;
 }
 
@@ -193,7 +203,7 @@ Token* Lexer::GetToken()
 				lexeme += b;
 				NextSym(b);
 			}
-			return new TokenVal<int>(lineCounter, currColumn, castType(_hex), lexeme, stoi(lexeme));
+			return new TokenVal<int>(lineCounter, currColumn, castType(_hex), lexeme, shtoi(lexeme));
 		}
 		else
 		{
