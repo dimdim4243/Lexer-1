@@ -46,7 +46,9 @@ public:
 	Lexer() {};
 	Lexer(string stream);
 	void NextSym(char &b);
+	bool ishex(char b);
 	int static stoi (string s);
+	int static shtoi (string s);
 	double static stor (string s);
 	void CountLaC(char &b);
 	Token* GetToken();
@@ -85,6 +87,20 @@ double Lexer::stor(string s)
 	return b;
 }
 
+int Lexer::shtoi(string s)
+{
+	int b;
+	istringstream str(s);
+	str.get();
+	str >> hex >> b;
+	return b;
+}
+
+bool Lexer::ishex(char b)
+{
+	return (b > 47 && b < 58) || (b > 64 && b < 71) || (b > 96 && b < 103);
+}
+
 void Lexer::CountLaC(char &b)
 {
 	if (b == ' ')
@@ -116,7 +132,6 @@ Token* Lexer::GetToken()
 	if (isalpha(b) || b == '_')
 	{
 		currColumn = columnCounter;
-		lexeme = "";
 		wneof(isalnum(b) || b == '_')
 		{
 			lexeme += b;
@@ -145,6 +160,7 @@ Token* Lexer::GetToken()
 	if (isdigit(b))
 	{
 		bool r = 0;
+		lexeme = "";
 		currColumn = columnCounter;
 		wneof(isdigit(b) || b == '.')
 		{
@@ -174,6 +190,26 @@ Token* Lexer::GetToken()
 		}
 		if (r) return new TokenVal<double>(lineCounter, currColumn, castType(real), lexeme, stor(lexeme));
 		else return new TokenVal<int>(lineCounter, currColumn, castType(integer), lexeme, stoi(lexeme));
+	}
+	if (b == '$')
+	{
+		lexeme += b;
+		currColumn = columnCounter;
+		NextSym(b);
+		if (ishex(b))
+		{
+			while (ishex(b))
+			{
+				lexeme += b;
+				NextSym(b);
+			}
+			return new TokenVal<int>(lineCounter, currColumn, castType(_hex), lexeme, shtoi(lexeme));
+		}
+		else
+		{
+			error = true;
+			return new TokenError(lineCounter, columnCounter, "NoHex");
+		}
 	}
 	return new Token();
 }
