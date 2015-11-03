@@ -6,8 +6,6 @@ string lower(string a){
 	return  a;
 }
 #define kw(k) s.insert(lower(#k));
-#define optr(o)
-#define sop(s, t)
 set<string> set_kws()
 {
 	set<string> s;
@@ -15,31 +13,45 @@ set<string> set_kws()
 	return s;
 }
 #undef kw
-#undef optr
-#undef sop
 
-#define kw(k)
+#define sep(s, t) s.insert(s);
+set<string> set_sep()
+{
+	set<string> s;
+#include "Separators.h"
+}
+#undef sep
+
 #define optr(o) s.insert(lower(#o));
 #define sop(r, t) s.insert(r);
 set<string> set_op()
 {
 	set<string> s;
-#include "Keywords.h"
+#include "Operators.h"
 
 	return s;
 }
-#undef kw
 #undef optr
 #undef sop
 
 set<string> kws = set_kws();
 set<string> ops = set_op();
+set<string> seps = set_sep();
 
 bool isop(char* b, bool first)
 {
 	for(set<string>::iterator it = ops.begin(); it != ops.end(); it++)
 	{
 		if (!isalpha(b[0]) && (first && it.operator*()[0] == b[0])) return true;
+		if (!first && it.operator*()[0] == b[0] && it.operator*()[1] == b[1]) return true;
+	}
+}
+
+bool issep(char *b, bool first)
+{
+	for(set<string>::iterator it = seps.begin(); it != seps.end(); it++)
+	{
+		if (first && it.operator*()[0] == b[0]) return true;
 		if (!first && it.operator*()[0] == b[0] && it.operator*()[1] == b[1]) return true;
 	}
 }
@@ -59,6 +71,7 @@ enum TYPES
 	sep,
 	keyword,
 #include "Keywords.h"
+#include "Operators.h"
 };
 #undef kw
 #undef optr
