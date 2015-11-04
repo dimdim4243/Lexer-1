@@ -271,6 +271,11 @@ Token* Lexer::GetToken()
 			return new TokenError(lineCounter, columnCounter, "BadCC");
 		}
 	}
+	if (!fin.eof())
+	{
+		error = true;
+		return new TokenError(lineCounter, columnCounter, "BadChar");
+	}
 	return new Token();
 }
 
