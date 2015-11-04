@@ -3,7 +3,7 @@
 
 string lower(string a){
 	std::transform(a.begin(), a.end(), a.begin(), ::tolower);
-	return  a;
+	return a;
 }
 #define kw(k) s.insert(lower(#k));
 set<string> set_kws()
@@ -59,6 +59,7 @@ bool issep(char *b, bool first)
 #define kw(k) k,
 #define optr(t) t,
 #define sop(s, t) t,
+#define sep(s, t) t,
 enum TYPES
 {
 	_string,
@@ -72,10 +73,12 @@ enum TYPES
 	keyword,
 #include "Keywords.h"
 #include "Operators.h"
+#include "Separators.h"
 };
 #undef kw
 #undef optr
 #undef sop
+#undef sep
 
 #define kw(k) m[#k] = k;
 #define optr(t) m[#t] = t;
