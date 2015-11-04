@@ -52,6 +52,7 @@ public:
 	double static stor (string s);
 	void CountLaC(char &b);
 	Token* GetToken();
+	Token* Error(string code);
 };
 
 Lexer::Lexer(string file)
@@ -68,7 +69,7 @@ void Lexer::NextSym(char &b)
 {
 	columnCounter++;
 	if (!fin.eof()) fin.get(b);
-	else b = (char)254;
+	else b = '~';
 }
 
 int Lexer::stoi(string s)
@@ -122,6 +123,12 @@ void Lexer::CountLaC(char &b)
 	}
 }
 
+Token* Lexer::Error(string code)
+{
+	error = true;
+	return new TokenError(lineCounter, columnCounter, code);
+}
+
 Token* Lexer::GetToken()
 {
 	if (!buffer.empty) return buffer.pop();
@@ -139,7 +146,7 @@ Token* Lexer::GetToken()
 		}
 		return new Token(lineCounter, currColumn, ABTypes(lexeme), lexeme);
 	}
-	if(isop(&b, 1))
+	else if(isop(&b, 1))
 	{
 		string buff;
 		char opr[2] = {b};
@@ -163,12 +170,12 @@ Token* Lexer::GetToken()
 			return new Token(lineCounter, columnCounter - 1, castType(op), buff);
 		}
 	}
-	if (isdigit(b))
+	else if (isdigit(b))
 	{
 		bool r = 0;
 		lexeme = "";
 		currColumn = columnCounter;
-		wneof(isdigit(b) || b == '.')
+		wneof(isdigit(b) || (!r && b == '.'))
 		{
 			if (b == '.')
 			{
@@ -185,11 +192,7 @@ Token* Lexer::GetToken()
 				{
 					lexeme += '.';
 				}
-				else
-				{
-					error = true;
-					return new TokenError(lineCounter, columnCounter, "NoFract");
-				}
+				else return Error("NoFract");
 			}
 			lexeme += b;
 			NextSym(b);
@@ -197,7 +200,7 @@ Token* Lexer::GetToken()
 		if (r) return new TokenVal<double>(lineCounter, currColumn, castType(real), lexeme, stor(lexeme));
 		else return new TokenVal<int>(lineCounter, currColumn, castType(integer), lexeme, stoi(lexeme));
 	}
-	if (b == '$')
+	else if (b == '$')
 	{
 		string h;
 		lexeme += b;
@@ -213,13 +216,9 @@ Token* Lexer::GetToken()
 			}
 			return new TokenVal<int>(lineCounter, currColumn, castType(_hex), lexeme, shtoi(h));
 		}
-		else
-		{
-			error = true;
-			return new TokenError(lineCounter, columnCounter, "NoHex");
-		}
+		else return Error("NoHex");
 	}
-	if (b == '#')
+	else if (b == '#')
 	{
 		int c;
 		string h;
@@ -239,11 +238,7 @@ Token* Lexer::GetToken()
 				}
 				c = shtoi(h);
 			}
-			else
-			{
-				error = true;
-				return new TokenError(lineCounter, columnCounter, "NoHex");
-			}
+			else return Error("NoHex");
 
 		}
 		else if(isdigit(b))
@@ -256,28 +251,15 @@ Token* Lexer::GetToken()
 			}
 			c = stoi(h);
 		}
-		else
-		{
-			error = true;
-			return new TokenError(lineCounter, columnCounter, "NoCC");
-		}
+		else return Error("NoCC");
 		if (c >= 0 && c <= 127)
 		{
 			return new TokenVal<char>(lineCounter, currColumn, castType(character), lexeme, (char)c);
 		}
-		else
-		{
-			error = true;
-			return new TokenError(lineCounter, columnCounter, "BadCC");
-		}
+		else return Error("BadCC");
 	}
-	if (!fin.eof())
-	{
-		error = true;
-		return new TokenError(lineCounter, columnCounter, "BadChar");
-	}
+	else return Error("BadChar");
 	return new Token();
 }
-
 
 #endif //LEXOGRAPH_LEXER_H
