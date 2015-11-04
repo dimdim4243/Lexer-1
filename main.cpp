@@ -25,8 +25,6 @@ using namespace std;
 
 int main()
 {
-	fout.flags(ios::scientific | ios::uppercase);
-	fout << setprecision(4);
 	Lexer myLexer("input.txt");
 	for (Token* i = myLexer.GetToken(); !i->null(); i = myLexer.GetToken())
 	{

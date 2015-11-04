@@ -7,7 +7,6 @@
 #include <algorithm>
 #include <map>
 #include <set>
-#include <iomanip>
 #include <sstream>
 
 using namespace std;
@@ -113,5 +112,20 @@ void TokenVal<Value> :: PrintToken()
     << value << "\n";
 }
 
+template <>
+void TokenVal<double> :: PrintToken()
+{
+    char buf[11];
+    sprintf(buf, "%.4e", value);
+
+    // remove extra digit in exp
+    buf[8] = buf[9]; buf[9] = buf[10]; buf[10] = 0;         
+    
+    fout << line << "\t"
+    << column << "\t"
+    << type << "\t"
+    << lexeme << "\t"
+    << buf << "\n";
+}
 
 #endif
