@@ -152,6 +152,12 @@ Token* Lexer::GetToken()
 			NextSym(b);
 			return new Token(lineCounter, columnCounter - 1, castType(op), buff);
 		}
+		else if (opr[0] == '.' && opr[1] == '.')
+		{
+			buff += b;
+			NextSym(b);
+			return new Token(lineCounter, columnCounter -1, castType(sep), buff);
+		}
 		else
 		{
 			return new Token(lineCounter, columnCounter - 1, castType(op), buff);
