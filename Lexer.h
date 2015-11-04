@@ -91,7 +91,6 @@ int Lexer::shtoi(string s)
 {
 	int b;
 	istringstream str(s);
-	str.get();
 	str >> hex >> b;
 	return b;
 }
@@ -129,6 +128,7 @@ Token* Lexer::GetToken()
 	if (fin.eof() || error) return new Token();
 	CountLaC(b);
 	lexeme = "";
+//	currColumn = columnCounter;
 	if (isalpha(b) || b == '_')
 	{
 		currColumn = columnCounter;
@@ -193,22 +193,76 @@ Token* Lexer::GetToken()
 	}
 	if (b == '$')
 	{
+		string h;
 		lexeme += b;
 		currColumn = columnCounter;
 		NextSym(b);
 		if (ishex(b))
 		{
-			while (ishex(b))
+			wneof(ishex(b))
 			{
 				lexeme += b;
+				h += b;
 				NextSym(b);
 			}
-			return new TokenVal<int>(lineCounter, currColumn, castType(_hex), lexeme, shtoi(lexeme));
+			return new TokenVal<int>(lineCounter, currColumn, castType(_hex), lexeme, shtoi(h));
 		}
 		else
 		{
 			error = true;
 			return new TokenError(lineCounter, columnCounter, "NoHex");
+		}
+	}
+	if (b == '#')
+	{
+		int c;
+		string h;
+		lexeme += b;
+		NextSym(b);
+		if (b == '$')
+		{
+			lexeme += b;
+			NextSym(b);
+			if (ishex(b))
+			{
+				wneof(ishex(b))
+				{
+					lexeme += b;
+					h += b;
+					NextSym(b);
+				}
+				c = shtoi(h);
+			}
+			else
+			{
+				error = true;
+				return new TokenError(lineCounter, columnCounter, "NoHex");
+			}
+
+		}
+		else if(isdigit(b))
+		{
+			wneof(isdigit(b))
+			{
+				lexeme += b;
+				h += b;
+				NextSym(b);
+			}
+			c = stoi(h);
+		}
+		else
+		{
+			error = true;
+			return new TokenError(lineCounter, columnCounter, "NoCC");
+		}
+		if (c >= 0 && c <= 127)
+		{
+			return new TokenVal<char>(lineCounter, currColumn, castType(character), lexeme, (char)c);
+		}
+		else
+		{
+			error = true;
+			return new TokenError(lineCounter, columnCounter, "BadCC");
 		}
 	}
 	return new Token();
