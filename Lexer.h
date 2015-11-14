@@ -45,7 +45,7 @@ private:
 public:
 	Lexer() {};
 	Lexer(string stream);
-	void NextSym(char &b);
+	void NextSym();
 	bool ishex(char b);
 	int static stoi (string s);
 	int static shtoi (string s);
@@ -62,10 +62,10 @@ Lexer::Lexer(string file)
 	lineCounter = 1;
 	columnCounter = 0;
 	currColumn = 0;
-	NextSym(b);
+	NextSym();
 }
 
-void Lexer::NextSym(char &b)
+void Lexer::NextSym()
 {
 	columnCounter++;
 	if (!fin.eof()) fin.get(b);
@@ -105,20 +105,20 @@ void Lexer::CountLaC(char &b)
 {
 	if (b == ' ')
 	{
-		NextSym(b);
+		NextSym();
 		CountLaC(b);
 	}
 	else if (b == '\t')
 	{
 		columnCounter += 4 - (columnCounter - 1) % 4;
-		if (!fin.eof()) fin.get(b);
+		NextSym();
 		CountLaC(b);
 	}
 	else if (b == '\n')
 	{
 		lineCounter++;
 		columnCounter = 1;
-		if (!fin.eof()) fin.get(b);
+		NextSym();
 		CountLaC(b);
 	}
 }
@@ -142,7 +142,7 @@ Token* Lexer::GetToken()
 		wneof(isalnum(b) || b == '_')
 		{
 			lexeme += b;
-			NextSym(b);
+			NextSym();
 		}
 		return new Token(lineCounter, currColumn, ABTypes(lexeme), lexeme);
 	}
@@ -151,18 +151,19 @@ Token* Lexer::GetToken()
 		string buff;
 		char opr[2] = {b};
 		buff += b;
-		NextSym(b);
+		NextSym();
 		opr[1] = b;
+		cout << fin.eof();
 		if (isop(opr, 0))
 		{
 			buff += b;
-			NextSym(b);
+			NextSym();
 			return new Token(lineCounter, columnCounter - 1, castType(op), buff);
 		}
 		else if (opr[0] == '.' && opr[1] == '.')
 		{
 			buff += b;
-			NextSym(b);
+			NextSym();
 			return new Token(lineCounter, columnCounter -1, castType(sep), buff);
 		}
 		else
@@ -180,12 +181,12 @@ Token* Lexer::GetToken()
 			if (b == '.')
 			{
 				r = 1;
-				NextSym(b);
+				NextSym();
 				if (b == '.')
 				{
 					Token twoDots(lineCounter, columnCounter - 1, castType(sep), "..");
 					buffer.push(&twoDots);
-					NextSym(b);
+					NextSym();
 					return new TokenVal<int>(lineCounter, currColumn, castType(integer), lexeme, stoi(lexeme));
 				}
 				else if (isdigit(b))
@@ -195,7 +196,7 @@ Token* Lexer::GetToken()
 				else return Error("NoFract");
 			}
 			lexeme += b;
-			NextSym(b);
+			NextSym();
 		}
 		if (r) return new TokenVal<double>(lineCounter, currColumn, castType(real), lexeme, stor(lexeme));
 		else return new TokenVal<int>(lineCounter, currColumn, castType(integer), lexeme, stoi(lexeme));
@@ -205,14 +206,14 @@ Token* Lexer::GetToken()
 		string h;
 		lexeme += b;
 		currColumn = columnCounter;
-		NextSym(b);
+		NextSym();
 		if (ishex(b))
 		{
 			wneof(ishex(b))
 			{
 				lexeme += b;
 				h += b;
-				NextSym(b);
+				NextSym();
 			}
 			return new TokenVal<int>(lineCounter, currColumn, castType(_hex), lexeme, shtoi(h));
 		}
@@ -223,18 +224,18 @@ Token* Lexer::GetToken()
 		int c;
 		string h;
 		lexeme += b;
-		NextSym(b);
+		NextSym();
 		if (b == '$')
 		{
 			lexeme += b;
-			NextSym(b);
+			NextSym();
 			if (ishex(b))
 			{
 				wneof(ishex(b))
 				{
 					lexeme += b;
 					h += b;
-					NextSym(b);
+					NextSym();
 				}
 				c = shtoi(h);
 			}
@@ -247,7 +248,7 @@ Token* Lexer::GetToken()
 			{
 				lexeme += b;
 				h += b;
-				NextSym(b);
+				NextSym();
 			}
 			c = stoi(h);
 		}
@@ -259,7 +260,6 @@ Token* Lexer::GetToken()
 		else return Error("BadCC");
 	}
 	else return Error("BadChar");
-	return new Token();
 }
 
 #endif //LEXOGRAPH_LEXER_H

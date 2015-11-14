@@ -46,6 +46,7 @@ bool isop(char* b, bool first)
 		if (!isalpha(b[0]) && (first && it.operator*()[0] == b[0])) return true;
 		if (!first && it.operator*()[0] == b[0] && it.operator*()[1] == b[1]) return true;
 	}
+	return false;
 }
 
 bool issep(char *b, bool first)
@@ -55,6 +56,7 @@ bool issep(char *b, bool first)
 		if (first && it.operator*()[0] == b[0]) return true;
 		if (!first && it.operator*()[0] == b[0] && it.operator*()[1] == b[1]) return true;
 	}
+	return false;
 }
 
 #define kw(k) k,
