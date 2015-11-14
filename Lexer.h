@@ -39,6 +39,7 @@ private:
 	int currColumn;
 	char b;
 	bool error;
+	bool end;
 	string lexeme;
 	ifstream fin;
 	TokenBuff buffer;
@@ -58,6 +59,7 @@ public:
 Lexer::Lexer(string file)
 {
 	error = false;
+	end = false;
 	fin.open(file);
 	lineCounter = 1;
 	columnCounter = 0;
@@ -69,7 +71,11 @@ void Lexer::NextSym()
 {
 	columnCounter++;
 	if (!fin.eof()) fin.get(b);
-	else b = '~';
+	if (fin.eof())
+	{
+		end = true;
+		b = '~';
+	}
 }
 
 int Lexer::stoi(string s)
@@ -132,14 +138,14 @@ Token* Lexer::Error(string code)
 Token* Lexer::GetToken()
 {
 	if (!buffer.empty) return buffer.pop();
-	if (fin.eof() || error) return new Token();
+	if (end || error) return new Token();
 	CountLaC(b);
 	lexeme = "";
 //	currColumn = columnCounter;
 	if (isalpha(b) || b == '_')
 	{
 		currColumn = columnCounter;
-		wneof(isalnum(b) || b == '_')
+		while (isalnum(b) || b == '_')
 		{
 			lexeme += b;
 			NextSym();
@@ -153,7 +159,6 @@ Token* Lexer::GetToken()
 		buff += b;
 		NextSym();
 		opr[1] = b;
-		cout << fin.eof();
 		if (isop(opr, 0))
 		{
 			buff += b;
@@ -176,7 +181,7 @@ Token* Lexer::GetToken()
 		bool r = 0;
 		lexeme = "";
 		currColumn = columnCounter;
-		wneof(isdigit(b) || (!r && b == '.'))
+		while (isdigit(b) || (!r && b == '.'))
 		{
 			if (b == '.')
 			{
@@ -209,7 +214,7 @@ Token* Lexer::GetToken()
 		NextSym();
 		if (ishex(b))
 		{
-			wneof(ishex(b))
+			while (ishex(b))
 			{
 				lexeme += b;
 				h += b;
@@ -231,7 +236,7 @@ Token* Lexer::GetToken()
 			NextSym();
 			if (ishex(b))
 			{
-				wneof(ishex(b))
+				while(ishex(b))
 				{
 					lexeme += b;
 					h += b;
@@ -244,7 +249,7 @@ Token* Lexer::GetToken()
 		}
 		else if(isdigit(b))
 		{
-			wneof(isdigit(b))
+			while (isdigit(b))
 			{
 				lexeme += b;
 				h += b;
@@ -259,7 +264,7 @@ Token* Lexer::GetToken()
 		}
 		else return Error("BadCC");
 	}
-	else return Error("BadChar");
+	else if (!end && b == '~') return Error("BadChar");
 }
 
 #endif //LEXOGRAPH_LEXER_H
