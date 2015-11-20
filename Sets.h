@@ -41,17 +41,17 @@ set<string> seps = set_sep();
 
 bool isop(string b)
 {
-	return (bool)ops.count(b);
+	return ops.count(b);
 }
 
-bool isop(char *b)
+bool isop(char b)
 {
-	return isop(string(b)) || *b == ':';
+	return isop(string(1, b)) || b == ':';
 }
 
-bool issep(char *b)
+bool issep(char b)
 {
-    return (bool)seps.count(string(b));
+    return seps.count(string(1, b));
 }
 
 #define kw(k) k,
