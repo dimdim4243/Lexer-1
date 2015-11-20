@@ -20,6 +20,7 @@ set<string> set_sep()
 {
 	set<string> s;
 #include "Separators.h"
+    return s;
 }
 #undef sep
 
@@ -29,7 +30,6 @@ set<string> set_op()
 {
 	set<string> s;
 #include "Operators.h"
-
 	return s;
 }
 #undef optr
@@ -49,14 +49,9 @@ bool isop(char *b)
 	return isop(string(b)) || *b == ':';
 }
 
-bool issep(char *b, bool first)
+bool issep(char *b)
 {
-	for(set<string>::iterator it = seps.begin(); it != seps.end(); it++)
-	{
-		if (first && (*it)[0] == b[0]) return true;
-		if (!first && (*it)[0] == b[0] && (*it)[1] == b[1]) return true;
-	}
-	return false;
+    return (bool)seps.count(string(b));
 }
 
 #define kw(k) k,

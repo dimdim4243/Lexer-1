@@ -38,7 +38,7 @@ public:
 	bool null();
 };
 
-bool Token::null()
+bool Token :: null()
 {
 	return type.empty();
 }

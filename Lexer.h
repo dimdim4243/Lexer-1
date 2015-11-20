@@ -169,11 +169,17 @@ Token* Lexer::GetToken()
             NextSym();
             return new Token(lineCounter, currColumn, castType(sep), buff);
         }
-        else if (f[0] != ':')
+        else
         {
+            if (f[0] == ':') return new Token(lineCounter, currColumn, castType(sep), f);
             return new Token(lineCounter, currColumn, castType(op), f);
         }
-        else return Error("BadChar", currColumn);
+    }
+    else if(issep(&b))
+    {
+        string s(&b);
+        NextSym();
+        return new Token(lineCounter, currColumn, castType(sep), s);
     }
 	else if (isdigit(b))
 	{
