@@ -39,14 +39,14 @@ set<string> kws = set_kws();
 set<string> ops = set_op();
 set<string> seps = set_sep();
 
-bool isop(char* b, bool first)
+bool isop(string b)
 {
-	for(set<string>::iterator it = ops.begin(); it != ops.end(); it++)
-	{
-		if (!isalpha(b[0]) && (first && (*it)[0] == b[0])) return true;
-		if (!first && (*it)[0] == b[0] && (*it)[1] == b[1]) return true;
-	}
-	return false;
+	return (bool)ops.count(b);
+}
+
+bool isop(char *b)
+{
+	return isop(string(b)) || *b == ':';
 }
 
 bool issep(char *b, bool first)
