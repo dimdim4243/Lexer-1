@@ -141,7 +141,7 @@ Token* Lexer::GetToken()
 	if (end || error) return new Token();
 	CountLaC(b);
 	lexeme = "";
-//	currColumn = columnCounter;
+	currColumn = columnCounter;
 	if (isalpha(b) || b == '_')
 	{
 		currColumn = columnCounter;
@@ -180,7 +180,6 @@ Token* Lexer::GetToken()
 	{
 		bool r = 0;
 		lexeme = "";
-		currColumn = columnCounter;
 		while (isdigit(b) || (!r && b == '.'))
 		{
 			if (b == '.')
@@ -210,7 +209,6 @@ Token* Lexer::GetToken()
 	{
 		string h;
 		lexeme += b;
-		currColumn = columnCounter;
 		NextSym();
 		if (ishex(b))
 		{
@@ -264,7 +262,7 @@ Token* Lexer::GetToken()
 		}
 		else return Error("BadCC");
 	}
-	else if (!end && b == '~') return Error("BadChar");
+	else if (!end) return Error("BadChar");
 }
 
 #endif //LEXOGRAPH_LEXER_H

@@ -43,8 +43,8 @@ bool isop(char* b, bool first)
 {
 	for(set<string>::iterator it = ops.begin(); it != ops.end(); it++)
 	{
-		if (!isalpha(b[0]) && (first && it.operator*()[0] == b[0])) return true;
-		if (!first && it.operator*()[0] == b[0] && it.operator*()[1] == b[1]) return true;
+		if (!isalpha(b[0]) && (first && (*it)[0] == b[0])) return true;
+		if (!first && (*it)[0] == b[0] && (*it)[1] == b[1]) return true;
 	}
 	return false;
 }
@@ -53,8 +53,8 @@ bool issep(char *b, bool first)
 {
 	for(set<string>::iterator it = seps.begin(); it != seps.end(); it++)
 	{
-		if (first && it.operator*()[0] == b[0]) return true;
-		if (!first && it.operator*()[0] == b[0] && it.operator*()[1] == b[1]) return true;
+		if (first && (*it)[0] == b[0]) return true;
+		if (!first && (*it)[0] == b[0] && (*it)[1] == b[1]) return true;
 	}
 	return false;
 }
