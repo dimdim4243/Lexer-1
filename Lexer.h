@@ -218,7 +218,7 @@ Token* Lexer::GetToken()
             NextSym();
             SkipWhiteSpaces();
             if (end)return Error("BadEOF");
-            if (b == '{')
+            if (b == '}')
             {
                 NextSym(); return GetToken();
             }
