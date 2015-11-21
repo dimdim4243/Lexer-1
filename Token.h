@@ -116,7 +116,7 @@ template <>
 void TokenVal<double> :: PrintToken()
 {
     char buf[11];
-    sprintf(buf, "%.4e", value);
+    sprintf(buf, "%.4E", value);
 
     // remove extra digit in exp
     buf[8] = buf[9]; buf[9] = buf[10]; buf[10] = 0;         
