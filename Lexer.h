@@ -36,7 +36,6 @@ class Lexer
 private:
 	int lineCounter;
 	int columnCounter;
-	int currColumn;
 	char b;
 	bool error;
 	bool end;
@@ -51,31 +50,34 @@ public:
 	int static stoi (string s);
 	int static shtoi (string s);
 	double static stor (string s);
-	void CountLaC();
+	void SkipWhiteSpaces();
 	Token* GetToken();
 	Token* Error(string code);
 };
 
-Lexer::Lexer(string file)
+Lexer::Lexer(string file):error(false), end(false)
 {
-	error = false;
-	end = false;
 	fin.open(file);
 	lineCounter = 1;
 	columnCounter = 0;
-	currColumn = 0;
 	NextSym();
 }
 
 void Lexer :: NextSym()
 {
-	fin.get(b);
-    columnCounter++;
+    fin.get(b);
     if (fin.eof())
 	{
-		end = true;
-		b = '~';
-	}
+        end = true;
+        b = '~';
+    }
+    if (b == '\t') columnCounter += 4 - (columnCounter - 1) % 4 - 1;
+    else if (b == '\n')
+    {
+        lineCounter++;
+        columnCounter = 0;
+    }
+    else columnCounter++;
 }
 
 int Lexer :: stoi(string s)
@@ -107,25 +109,12 @@ bool Lexer::ishex(char b)
 	return b >= '0' && b <= '9' || b >= 'a' && b <= 'f' || b >= 'A' && b <= 'F';
 }
 
-void Lexer::CountLaC()
+void Lexer :: SkipWhiteSpaces()
 {
-	if (b == ' ')
-	{
-		NextSym();
-	}
-	else if (b == '\t')
-	{
-		columnCounter += 4 - (columnCounter - 1) % 4 - 1;
-		NextSym();
-	}
-	else if (b == '\n')
-	{
-		lineCounter++;
-		columnCounter = 0;
-		NextSym();
-	}
-    else return;
-    CountLaC();
+	while (b == ' ' || b == '\n' || b == '\t')
+    {
+        NextSym();
+    }
 }
 
 Token* Lexer::Error(string code)
@@ -136,11 +125,11 @@ Token* Lexer::Error(string code)
 
 Token* Lexer::GetToken()
 {
-    CountLaC();
+    SkipWhiteSpaces();
 	if (!buffer.empty) return buffer.pop();
 	if (end || error) return new Token();
 	lexeme = "";
-	currColumn = columnCounter;
+    int currLine = lineCounter, currColumn = columnCounter;
 	if (isalpha(b) || b == '_')
 	{
 		currColumn = columnCounter;
@@ -149,7 +138,7 @@ Token* Lexer::GetToken()
 			lexeme += b;
 			NextSym();
 		}
-		return new Token(lineCounter, currColumn, ABTypes(lexeme), lexeme);
+		return new Token(currLine, currColumn, ABTypes(lexeme), lexeme);
 	}
     else if (b == '\'')
     {
@@ -166,9 +155,9 @@ Token* Lexer::GetToken()
         lexeme += b;
         NextSym();
         if (size == 1)
-            return new TokenVal<char>(lineCounter, currColumn, castType(character), lexeme, lexeme[1]);
+            return new TokenVal<char>(currLine, currColumn, castType(character), lexeme, lexeme[1]);
         else
-            return new TokenVal<string>(lineCounter, currColumn, castType(_string), lexeme, lexeme.substr(1, lexeme.size() - 2));
+            return new TokenVal<string>(currLine, currColumn, castType(_string), lexeme, lexeme.substr(1, lexeme.size() - 2));
     }
 	else if(isop(b))
 	{
@@ -178,16 +167,16 @@ Token* Lexer::GetToken()
         {
             buff += b;
             NextSym();
-            return new Token(lineCounter, currColumn, castType(op), buff);
+            return new Token(currLine, currColumn, castType(op), buff);
         }
         else if (buff[0] == '.' && b == '.')
         {
             NextSym();
-            return new Token(lineCounter, currColumn, castType(sep), buff + '.');
+            return new Token(currLine, currColumn, castType(sep), buff + '.');
         }
         else
         {
-            if (buff == ":") return new Token(lineCounter, currColumn, castType(sep), buff);
+            if (buff == ":") return new Token(currLine, currColumn, castType(sep), buff);
             else if (buff == "/" && b == '/')
             {
                 getline(fin, buff);
@@ -196,14 +185,18 @@ Token* Lexer::GetToken()
                 NextSym();
                 return GetToken();
             }
-            return new Token(lineCounter, currColumn, castType(op), buff);
+            return new Token(currLine, currColumn, castType(op), buff);
         }
     }
     else if(issep(b))
     {
-        string s(&b);
+        string s(1, b);
         NextSym();
-        return new Token(lineCounter, currColumn, castType(sep), s);
+        if (s == "(" && b == '*')
+        {
+
+        }
+        return new Token(currLine, currColumn, castType(sep), s);
     }
 	else if (isdigit(b))
 	{
@@ -217,10 +210,10 @@ Token* Lexer::GetToken()
 				NextSym();
 				if (b == '.')
 				{
-					Token twoDots(lineCounter, columnCounter - 1, castType(sep), "..");
+					Token twoDots(currLine, columnCounter - 1, castType(sep), "..");
 					buffer.push(&twoDots);
 					NextSym();
-					return new TokenVal<int>(lineCounter, currColumn, castType(integer), lexeme, stoi(lexeme));
+					return new TokenVal<int>(currLine, currColumn, castType(integer), lexeme, stoi(lexeme));
 				}
 				else if (isdigit(b))
 				{
@@ -231,8 +224,8 @@ Token* Lexer::GetToken()
 			lexeme += b;
 			NextSym();
 		}
-		if (r) return new TokenVal<double>(lineCounter, currColumn, castType(real), lexeme, stor(lexeme));
-		else return new TokenVal<int>(lineCounter, currColumn, castType(integer), lexeme, stoi(lexeme));
+		if (r) return new TokenVal<double>(currLine, currColumn, castType(real), lexeme, stor(lexeme));
+		else return new TokenVal<int>(currLine, currColumn, castType(integer), lexeme, stoi(lexeme));
 	}
 	else if (b == '$')
 	{
@@ -247,7 +240,7 @@ Token* Lexer::GetToken()
 				h += b;
 				NextSym();
 			}
-			return new TokenVal<int>(lineCounter, currColumn, castType(_hex), lexeme, shtoi(h));
+			return new TokenVal<int>(currLine, currColumn, castType(_hex), lexeme, shtoi(h));
 		}
 		else return Error("NoHex");
 	}
@@ -287,7 +280,7 @@ Token* Lexer::GetToken()
 		else return Error("NoCC");
 		if (c >= 0 && c <= 127)
 		{
-			return new TokenVal<char>(lineCounter, currColumn, castType(character), lexeme, (char)c);
+			return new TokenVal<char>(currLine, currColumn, castType(character), lexeme, (char)c);
 		}
 		else return Error("BadCC");
 	}
