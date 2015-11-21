@@ -67,7 +67,7 @@ Lexer::Lexer(string file)
 	NextSym();
 }
 
-void Lexer::NextSym()
+void Lexer :: NextSym()
 {
 	fin.get(b);
     columnCounter++;
@@ -78,7 +78,7 @@ void Lexer::NextSym()
 	}
 }
 
-int Lexer::stoi(string s)
+int Lexer :: stoi(string s)
 {
 	int b;
 	istringstream str(s);
@@ -86,7 +86,7 @@ int Lexer::stoi(string s)
 	return b;
 }
 
-double Lexer::stor(string s)
+double Lexer :: stor(string s)
 {
 	float b;
 	istringstream str(s);
@@ -115,7 +115,7 @@ void Lexer::CountLaC()
 	}
 	else if (b == '\t')
 	{
-		columnCounter += 4 - (columnCounter - 1) % 4;
+		columnCounter += 4 - (columnCounter - 1) % 4 - 1;
 		NextSym();
 	}
 	else if (b == '\n')
@@ -138,7 +138,7 @@ Token* Lexer::GetToken()
 {
     CountLaC();
 	if (!buffer.empty) return buffer.pop();
-    if (end || error) return new Token();
+	if (end || error) return new Token();
 	lexeme = "";
 	currColumn = columnCounter;
 	if (isalpha(b) || b == '_')
@@ -188,6 +188,14 @@ Token* Lexer::GetToken()
         else
         {
             if (buff == ":") return new Token(lineCounter, currColumn, castType(sep), buff);
+            else if (buff == "/" && b == '/')
+            {
+                getline(fin, buff);
+                lineCounter++;
+                columnCounter = 0;
+                NextSym();
+                return GetToken();
+            }
             return new Token(lineCounter, currColumn, castType(op), buff);
         }
     }
