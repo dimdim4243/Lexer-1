@@ -45,7 +45,7 @@ private:
 public:
 	Lexer() {};
 	Lexer(string stream);
-	void NextSym();
+	char NextSym();
 	bool ishex(char b);
 	int static stoi (string s);
 	int static shtoi (string s);
@@ -63,7 +63,7 @@ Lexer::Lexer(string file):error(false), end(false)
 	NextSym();
 }
 
-void Lexer :: NextSym()
+char Lexer :: NextSym()
 {
     fin.get(b);
     if (fin.eof())
@@ -78,6 +78,7 @@ void Lexer :: NextSym()
         columnCounter = 0;
     }
     else columnCounter++;
+    return b;
 }
 
 int Lexer :: stoi(string s)
@@ -194,7 +195,15 @@ Token* Lexer::GetToken()
         NextSym();
         if (s == "(" && b == '*')
         {
-
+            bool endComment = false;
+            while (!endComment)
+            {
+                NextSym();
+                SkipWhiteSpaces();
+                if (b == '*' && NextSym() == ')') endComment = true;
+            }
+            NextSym();
+            return GetToken();
         }
         return new Token(currLine, currColumn, castType(sep), s);
     }
