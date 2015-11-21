@@ -112,21 +112,20 @@ void Lexer::CountLaC()
 	if (b == ' ')
 	{
 		NextSym();
-		CountLaC();
 	}
 	else if (b == '\t')
 	{
 		columnCounter += 4 - (columnCounter - 1) % 4;
 		NextSym();
-		CountLaC();
 	}
 	else if (b == '\n')
 	{
 		lineCounter++;
 		columnCounter = 0;
 		NextSym();
-		CountLaC();
 	}
+    else return;
+    CountLaC();
 }
 
 Token* Lexer::Error(string code)
@@ -152,6 +151,24 @@ Token* Lexer::GetToken()
 		}
 		return new Token(lineCounter, currColumn, ABTypes(lexeme), lexeme);
 	}
+    else if (b == '\'')
+    {
+        int size = 0;
+        lexeme += b;
+        NextSym();
+        while (b != '\'')
+        {
+            if (b == '\n') return Error("BadNL");
+            lexeme += b; size++;
+            NextSym();
+        }
+        lexeme += b;
+        NextSym();
+        if (size == 1)
+            return new TokenVal<char>(lineCounter, currColumn, castType(character), lexeme, lexeme[1]);
+        else
+            return new TokenVal<string>(lineCounter, currColumn, castType(_string), lexeme, lexeme.substr(1, lexeme.size() - 2));
+    }
 	else if(isop(b))
 	{
         string buff(1, b);
