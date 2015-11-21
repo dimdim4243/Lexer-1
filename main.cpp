@@ -29,6 +29,7 @@ int main(int argc, char *argv[])
 	for (Token* i = myLexer.GetToken(); !i->null(); i = myLexer.GetToken())
 	{
 		i->PrintToken();
+        delete i;
 	}
 
 	return 0;
