@@ -55,11 +55,9 @@ public:
 	Token* Error(string code);
 };
 
-Lexer::Lexer(string file):error(false), end(false)
+Lexer :: Lexer(string file):error(false), end(false), lineCounter(1), columnCounter(0)
 {
 	fin.open(file);
-	lineCounter = 1;
-	columnCounter = 0;
 	NextSym();
 }
 
@@ -71,7 +69,7 @@ char Lexer :: NextSym()
         end = true;
         b = '~';
     }
-    if (b == '\t') columnCounter += 4 - (columnCounter - 1) % 4 - 1;
+    if (b == '\t') columnCounter += 4 - columnCounter % 4;
     else if (b == '\n')
     {
         lineCounter++;
@@ -200,6 +198,7 @@ Token* Lexer::GetToken()
             {
                 NextSym();
                 SkipWhiteSpaces();
+                if (end)return Error("BadEOF");
                 if (b == '*' && NextSym() == ')') endComment = true;
             }
             NextSym();
