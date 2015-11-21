@@ -193,39 +193,46 @@ Token* Lexer::GetToken()
         NextSym();
         if (s == "(" && b == '*')
         {
-            bool endComment = false;
-            while (!endComment)
-            {
-                NextSym();
-                SkipWhiteSpaces();
-                if (end)return Error("BadEOF");
-                if (b == '*' && NextSym() == ')') endComment = true;
-            }
             NextSym();
-            return GetToken();
+            while (1)
+            {
+                if (end)return Error("BadEOF");
+                if (b == '*')
+                {
+                    if (NextSym() == ')')
+                    {
+                        NextSym();
+                        return GetToken();
+                    }
+                }
+                else NextSym();
+                SkipWhiteSpaces();
+            }
         }
         return new Token(currLine, currColumn, castType(sep), s);
     }
     else if (b == '{')
     {
-        while (b != '}')
+        while (1)
         {
             NextSym();
             SkipWhiteSpaces();
             if (end)return Error("BadEOF");
+            if (b == '{')
+            {
+                NextSym(); return GetToken();
+            }
         }
-        NextSym();
-        return GetToken();
     }
 	else if (isdigit(b))
 	{
-		bool r = 0;
+		bool r = false;
 		lexeme = "";
 		while (isdigit(b) || (!r && b == '.'))
 		{
 			if (b == '.')
 			{
-				r = 1;
+				r = true;
 				NextSym();
 				if (b == '.')
 				{
