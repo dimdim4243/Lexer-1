@@ -1,6 +1,5 @@
 #ifndef LEXOGRAPH_LEXER_H
 #define LEXOGRAPH_LEXER_H
-#define wneof(a) while((a) && !fin.eof())
 
 struct TokenBuff
 {
@@ -250,16 +249,14 @@ Token* Lexer::GetToken()
 	{
 		bool r = false;
 		lexeme = "";
-		while (isdigit(b) || (!r && b == '.'))
+		while (isdigit(b) || (!r && b == '.' || b == 'e' || b == 'E'))
 		{
 			if (b == '.')
 			{
 				r = true;
-				NextSym();
-				if (b == '.')
+				if (NextSym() == '.')
 				{
-					Token twoDots(currLine, columnCounter - 1, castType(sep), "..");
-					buffer.push(&twoDots);
+					buffer.push(new Token(currLine, columnCounter - 1, castType(sep), ".."));
 					NextSym();
 					return new TokenVal<int>(currLine, currColumn, castType(integer), lexeme, stoi(lexeme));
 				}
@@ -269,6 +266,20 @@ Token* Lexer::GetToken()
 				}
 				else return Error("NoFract");
 			}
+            else if (b == 'e' || b == 'E')
+            {
+                r = true;
+                lexeme += b;
+                if (NextSym() == '+' || b == '-')
+                {
+                    lexeme += b;
+                    NextSym();
+                    if (!isdigit(b)) return Error("NoExp");
+                } else if (!isdigit(b))
+                {
+                    return Error("NoExp");
+                }
+            }
 			lexeme += b;
 			NextSym();
 		}
