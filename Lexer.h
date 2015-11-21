@@ -70,7 +70,7 @@ Lexer::Lexer(string file)
 void Lexer::NextSym()
 {
 	fin.get(b);
-	if (b != '\n') columnCounter++;
+    columnCounter++;
     if (fin.eof())
 	{
 		end = true;
@@ -136,9 +136,9 @@ Token* Lexer::Error(string code)
 
 Token* Lexer::GetToken()
 {
+    CountLaC();
 	if (!buffer.empty) return buffer.pop();
-	if (end || error) return new Token();
-	CountLaC();
+    if (end || error) return new Token();
 	lexeme = "";
 	currColumn = columnCounter;
 	if (isalpha(b) || b == '_')
@@ -159,6 +159,7 @@ Token* Lexer::GetToken()
         while (b != '\'')
         {
             if (b == '\n') return Error("BadNL");
+            if (end) return Error("BadEOF");
             lexeme += b; size++;
             NextSym();
         }

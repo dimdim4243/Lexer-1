@@ -23,7 +23,7 @@ using namespace std;
 
 #include "Lexer.h"
 
-int main()
+int main(int argc, char *argv[])
 {
 	Lexer myLexer("input.txt");
 	for (Token* i = myLexer.GetToken(); !i->null(); i = myLexer.GetToken())
