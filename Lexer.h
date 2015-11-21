@@ -50,10 +50,20 @@ public:
 	int static stoi (string s);
 	int static shtoi (string s);
 	double static stor (string s);
+    void ReplaceAll(string *str, string from, string to);
 	void SkipWhiteSpaces();
 	Token* GetToken();
 	Token* Error(string code);
 };
+
+void Lexer :: ReplaceAll(string *str, string from, string to)
+{
+    unsigned int start_pos = 0;
+    while((start_pos = (*str).find(from, start_pos)) != std::string::npos) {
+        (*str).replace(start_pos, from.length(), to);
+        start_pos += to.length();
+    }
+}
 
 Lexer :: Lexer(string file):error(false), end(false), lineCounter(1), columnCounter(0)
 {
@@ -144,19 +154,31 @@ Token* Lexer::GetToken()
         int size = 0;
         lexeme += b;
         NextSym();
-        while (b != '\'')
+        while (1)
         {
             if (b == '\n') return Error("BadNL");
             if (end) return Error("BadEOF");
-            lexeme += b; size++;
-            NextSym();
+            else if (b == '\'')
+            {
+                if (NextSym() == '\'')
+                {
+                    lexeme += string(2, b);
+                    size++;
+                    NextSym();
+                }
+                else
+                {
+                    lexeme += '\'';
+                    string value = lexeme.substr(1, lexeme.size() - 2);
+                    ReplaceAll(&value, "''", "'");
+                    if (size == 1)
+                        return new TokenVal<char>(currLine, currColumn, castType(character), lexeme, lexeme[1]);
+                    else
+                        return new TokenVal<string>(currLine, currColumn, castType(_string), lexeme, value);
+                }
+            }
+            else lexeme += b, size++, NextSym();
         }
-        lexeme += b;
-        NextSym();
-        if (size == 1)
-            return new TokenVal<char>(currLine, currColumn, castType(character), lexeme, lexeme[1]);
-        else
-            return new TokenVal<string>(currLine, currColumn, castType(_string), lexeme, lexeme.substr(1, lexeme.size() - 2));
     }
 	else if(isop(b))
 	{
