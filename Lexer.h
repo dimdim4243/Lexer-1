@@ -206,6 +206,17 @@ Token* Lexer::GetToken()
         }
         return new Token(currLine, currColumn, castType(sep), s);
     }
+    else if (b == '{')
+    {
+        while (b != '}')
+        {
+            NextSym();
+            SkipWhiteSpaces();
+            if (end)return Error("BadEOF");
+        }
+        NextSym();
+        return GetToken();
+    }
 	else if (isdigit(b))
 	{
 		bool r = 0;
