@@ -72,19 +72,19 @@ Lexer :: Lexer(string file):error(false), end(false), lineCounter(1), columnCoun
 
 char Lexer :: NextSym()
 {
+	if (b == '\t') columnCounter += 4 - (columnCounter - 1) % 4;
+	else if (b == '\n')
+	{
+		lineCounter++;
+		columnCounter = 1;
+	}
+	else columnCounter++;
     fin.get(b);
     if (fin.eof())
 	{
         end = true;
         b = '~';
     }
-    if (b == '\t') columnCounter += 4 - columnCounter % 4;
-    else if (b == '\n')
-    {
-        lineCounter++;
-        columnCounter = 0;
-    }
-    else columnCounter++;
     return b;
 }
 
@@ -290,8 +290,7 @@ Token* Lexer::GetToken()
 	{
 		string h;
 		lexeme += b;
-		NextSym();
-		if (ishex(b))
+		if (ishex(NextSym()))
 		{
 			while (ishex(b))
 			{
@@ -308,12 +307,10 @@ Token* Lexer::GetToken()
 		int c;
 		string h;
 		lexeme += b;
-		NextSym();
-		if (b == '$')
+		if (NextSym() == '$')
 		{
 			lexeme += b;
-			NextSym();
-			if (ishex(b))
+			if (ishex(NextSym()))
 			{
 				while(ishex(b))
 				{
