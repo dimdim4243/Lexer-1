@@ -135,7 +135,7 @@ Token* Lexer::GetToken()
 {
     SkipWhiteSpaces();
 	if (!buffer.empty) return buffer.pop();
-	if (end || error) return new Token();
+	if (end || error) return NULL;
 	lexeme = "";
     int currLine = lineCounter, currColumn = columnCounter;
 	if (isalpha(b) || b == '_')

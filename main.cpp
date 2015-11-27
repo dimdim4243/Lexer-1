@@ -26,7 +26,7 @@ using namespace std;
 int main(int argc, char *argv[])
 {
 	Lexer myLexer("input.txt");
-	for (Token* i = myLexer.GetToken(); !i->null(); i = myLexer.GetToken())
+	for (Token* i = myLexer.GetToken(); i != NULL; i = myLexer.GetToken())
 	{
 		i->PrintToken();
         delete i;

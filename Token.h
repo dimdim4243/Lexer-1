@@ -38,10 +38,6 @@ public:
 	bool null();
 };
 
-bool Token :: null()
-{
-	return type.empty();
-}
 
 Token :: Token(int line, int column, string type, string lexeme)
 {
