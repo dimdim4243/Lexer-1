@@ -226,9 +226,8 @@ Token* Lexer::GetToken()
     }
 	else if (isdigit(b))
 	{
-		bool r = false;
-		lexeme = "";
-		while (isdigit(b) || (!r && (b == '.' || b == 'e' || b == 'E')))
+		bool r = false, e = false;
+		while (isdigit(b) || (!r && b == '.' || (!e &&  b == 'e' || b == 'E')))
 		{
 			if (b == '.')
 			{
@@ -247,14 +246,14 @@ Token* Lexer::GetToken()
 			}
             else if (b == 'e' || b == 'E')
             {
-                r = true;
+                e = true;
                 lexeme += b;
                 if (NextSym() == '+' || b == '-')
                 {
                     lexeme += b;
                     NextSym();
-                    if (!isdigit(b)) return Error("NoExp");
-                } else if (!isdigit(b))
+                }
+				if (!isdigit(b))
                 {
                     return Error("NoExp");
                 }
@@ -262,7 +261,7 @@ Token* Lexer::GetToken()
 			lexeme += b;
 			NextSym();
 		}
-		if (r) return new TokenVal<double>(currLine, currColumn, REAL, lexeme, stor(lexeme));
+		if (r || e) return new TokenVal<double>(currLine, currColumn, REAL, lexeme, stor(lexeme));
 		else return new TokenVal<int>(currLine, currColumn, INTEGER, lexeme, stoi(lexeme));
 	}
 	else if (b == '$')
