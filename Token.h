@@ -14,14 +14,14 @@ using namespace std;
 #include "Sets.h"
 ofstream fout("output.txt");
 
-string ABTypes(string word)
+Types ABTypes(string word)
 {
     if (kws.count(word) != 0)
-        return castType(KEYWORD);
+        return KEYWORD;
     else if (ops.count(word) != 0)
-        return castType(OP);
+        return OP;
     else
-        return castType(IDENT);
+        return IDENT;
 }
 
 class Token
@@ -29,17 +29,34 @@ class Token
 protected:
     int line;
     int column;
-    string type;
+    Types type;
     string lexeme;
+#define kw(k) case k: return #k;
+    static string TypeToString (Types type)
+    {
+        switch (type)
+        {
+            case STRING:   return "string";
+            case CHARACTER: return "char";
+            case INTEGER:   return "integer";
+            case HEX:      return "hex";
+            case REAL:      return "real";
+            case OP:        return "op";
+            case IDENT:     return "ident";
+            case SEP:       return "sep";
+            case KEYWORD:   return "keyword";
+#include "Keywords.h"
+        }
+    }
+#undef kw
 public:
     Token() {}
-    Token(int line, int column, string type, string lexeme);
+    Token(int line, int column, Types type, string lexeme);
     virtual void  PrintToken ();
-	bool null();
 };
 
 
-Token :: Token(int line, int column, string type, string lexeme)
+Token :: Token(int line, int column, Types type, string lexeme)
 {
 	this->line = line;
 	this->column = column;
@@ -51,7 +68,7 @@ void Token :: PrintToken ()
 {
 	fout << line << "\t"
 	<< column << "\t"
-	<< type << "\t"
+	<< TypeToString(type) <<"\t"
 	<< lexeme	<< "\n";
 }
 
@@ -59,7 +76,7 @@ void Token :: PrintToken ()
 class TokenError: public Token
 {
 public:
-	TokenError(int line, int column, string type);
+	TokenError(int line, int column, string error);
 	void PrintToken();
 };
 
@@ -67,14 +84,14 @@ void TokenError :: PrintToken ()
 {
 	fout << line << "\t"
 	<< column << "\t"
-	<< type;
+	<< lexeme;
 }
 
-TokenError :: TokenError(int line, int column, string type)
+TokenError :: TokenError(int line, int column, string error)
 {
 	this->line = line;
 	this->column = column;
-	this->type = type;
+	this->lexeme = error;
 }
 
 template <typename Value>
@@ -83,13 +100,13 @@ class TokenVal: public Token
 protected:
     Value value;
 public:
-    TokenVal(int line, int column, string type, string lexeme, Value value);
+    TokenVal(int line, int column, Types type, string lexeme, Value value);
     void PrintToken ();
 };
 
 
 template <typename Value>
-TokenVal<Value> :: TokenVal(int line, int column, string type, string lexeme, Value value)
+TokenVal<Value> :: TokenVal(int line, int column, Types type, string lexeme, Value value)
 {
     this->line = line;
     this->column = column;
@@ -103,7 +120,7 @@ void TokenVal<Value> :: PrintToken()
 {
     fout << line << "\t"
     << column << "\t"
-    << type << "\t"
+    << TypeToString(type) <<"\t"
     << lexeme << "\t"
     << value << "\n";
 }
@@ -119,7 +136,7 @@ void TokenVal<double> :: PrintToken()
     
     fout << line << "\t"
     << column << "\t"
-    << type << "\t"
+    << TypeToString(type) <<"\t"
     << lexeme << "\t"
     << buf << "\n";
 }

@@ -171,9 +171,9 @@ Token* Lexer::GetToken()
                     string value = lexeme.substr(1, lexeme.size() - 2);
                     ReplaceAll(&value, "''", "'");
                     if (size == 1)
-                        return new TokenVal<char>(currLine, currColumn, castType(CHARACTER), lexeme, lexeme[1]);
+                        return new TokenVal<char>(currLine, currColumn, CHARACTER, lexeme, lexeme[1]);
                     else
-                        return new TokenVal<string>(currLine, currColumn, castType(STRING), lexeme, value);
+                        return new TokenVal<string>(currLine, currColumn, STRING, lexeme, value);
                 }
             }
             else lexeme += b, size++, NextSym();
@@ -187,16 +187,16 @@ Token* Lexer::GetToken()
         {
             buff += b;
             NextSym();
-            return new Token(currLine, currColumn, castType(OP), buff);
+            return new Token(currLine, currColumn, OP, buff);
         }
         else if (buff[0] == '.' && b == '.')
         {
             NextSym();
-            return new Token(currLine, currColumn, castType(SEP), buff + '.');
+            return new Token(currLine, currColumn, SEP, buff + '.');
         }
         else
         {
-            if (buff == ":") return new Token(currLine, currColumn, castType(SEP), buff);
+            if (buff == ":") return new Token(currLine, currColumn, SEP, buff);
             else if (buff == "/" && b == '/')
             {
                 getline(fin, buff);
@@ -205,7 +205,7 @@ Token* Lexer::GetToken()
                 NextSym();
                 return GetToken();
             }
-            return new Token(currLine, currColumn, castType(OP), buff);
+            return new Token(currLine, currColumn, OP, buff);
         }
     }
     else if(issep(b))
@@ -230,7 +230,7 @@ Token* Lexer::GetToken()
                 SkipWhiteSpaces();
             }
         }
-        return new Token(currLine, currColumn, castType(SEP), s);
+        return new Token(currLine, currColumn, SEP, s);
     }
     else if (b == '{')
     {
@@ -256,9 +256,9 @@ Token* Lexer::GetToken()
 				r = true;
 				if (NextSym() == '.')
 				{
-					buffer.push(new Token(currLine, columnCounter - 1, castType(SEP), ".."));
+					buffer.push(new Token(currLine, columnCounter - 1, SEP, ".."));
 					NextSym();
-					return new TokenVal<int>(currLine, currColumn, castType(INTEGER), lexeme, stoi(lexeme));
+					return new TokenVal<int>(currLine, currColumn, INTEGER, lexeme, stoi(lexeme));
 				}
 				else if (isdigit(b))
 				{
@@ -283,8 +283,8 @@ Token* Lexer::GetToken()
 			lexeme += b;
 			NextSym();
 		}
-		if (r) return new TokenVal<double>(currLine, currColumn, castType(REAL), lexeme, stor(lexeme));
-		else return new TokenVal<int>(currLine, currColumn, castType(INTEGER), lexeme, stoi(lexeme));
+		if (r) return new TokenVal<double>(currLine, currColumn, REAL, lexeme, stor(lexeme));
+		else return new TokenVal<int>(currLine, currColumn, INTEGER, lexeme, stoi(lexeme));
 	}
 	else if (b == '$')
 	{
@@ -298,7 +298,7 @@ Token* Lexer::GetToken()
 				h += b;
 				NextSym();
 			}
-			return new TokenVal<int>(currLine, currColumn, castType(HEX), lexeme, shtoi(h));
+			return new TokenVal<int>(currLine, currColumn, HEX, lexeme, shtoi(h));
 		}
 		else return Error("NoHex");
 	}
@@ -336,7 +336,7 @@ Token* Lexer::GetToken()
 		else return Error("NoCC");
 		if (c >= 0 && c <= 127)
 		{
-			return new TokenVal<char>(currLine, currColumn, castType(CHARACTER), lexeme, (char)c);
+			return new TokenVal<char>(currLine, currColumn, CHARACTER, lexeme, (char)c);
 		}
 		else return Error("BadCC");
 	}

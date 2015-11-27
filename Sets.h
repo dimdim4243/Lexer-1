@@ -89,27 +89,5 @@ map<string, Types> mapInit(map<string, Types> m)
 #undef optr
 #undef sop
 
-#define kw(k) case k: return #k;
-#define optr(t) case t: return #t;
-#define sop(s, t) case t: return s;
-string castType (Types type)
-{
-	switch (type)
-	{
-		case STRING:   return "string";
-		case CHARACTER: return "char";
-		case INTEGER:   return "integer";
-		case HEX:      return "hex";
-		case REAL:      return "real";
-		case OP:        return "op";
-		case IDENT:     return "ident";
-		case SEP:       return "sep";
-		case KEYWORD:   return "keyword";
-		#include "Keywords.h"
-	}
-}
-#undef kw
-#undef optr
-#undef sop
 
 #endif
