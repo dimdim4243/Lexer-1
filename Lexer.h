@@ -37,7 +37,6 @@ Token* Lexer::PopBuffer()
 void Lexer :: ReplaceAll(string *str, string from, string to)
 {
     unsigned int start_pos = 0;
-    unsigned int start_pos = 0;
     while((start_pos = (*str).find(from, start_pos)) != std::string::npos) {
         (*str).replace(start_pos, from.length(), to);
         start_pos += to.length();
@@ -229,7 +228,7 @@ Token* Lexer::GetToken()
 	{
 		bool r = false;
 		lexeme = "";
-		while (isdigit(b) || (!r && b == '.' || b == 'e' || b == 'E'))
+		while (isdigit(b) || (!r && (b == '.' || b == 'e' || b == 'E')))
 		{
 			if (b == '.')
 			{
