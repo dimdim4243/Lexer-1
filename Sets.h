@@ -58,17 +58,17 @@ bool issep(char b)
 #define optr(t) t,
 #define sop(s, t) t,
 #define sep(s, t) t,
-enum TYPES
+enum Types
 {
-	_string,
-	character,
-	integer,
-	_hex,
-	real,
-	ident,
-	op,
-	sep,
-	keyword,
+	STRING,
+	CHARACTER,
+	INTEGER,
+	HEX,
+	REAL,
+	IDENT,
+	OP,
+	SEP,
+	KEYWORD,
 #include "Keywords.h"
 #include "Operators.h"
 #include "Separators.h"
@@ -81,7 +81,7 @@ enum TYPES
 #define kw(k) m[#k] = k;
 #define optr(t) m[#t] = t;
 #define sop(s, t) m[#s] = t;
-map<string, TYPES> mapInit(map<string, TYPES> m)
+map<string, Types> mapInit(map<string, Types> m)
 {
 	#include "Keywords.h"
 };
@@ -92,19 +92,19 @@ map<string, TYPES> mapInit(map<string, TYPES> m)
 #define kw(k) case k: return #k;
 #define optr(t) case t: return #t;
 #define sop(s, t) case t: return s;
-string castType (TYPES type)
+string castType (Types type)
 {
 	switch (type)
 	{
-		case _string:   return "string";
-		case character: return "char";
-		case integer:   return "integer";
-		case _hex:      return "hex";
-		case real:      return "real";
-		case op:        return "op";
-		case ident:    return "ident";
-		case sep:       return "sep";
-		case keyword:   return "keyword";
+		case STRING:   return "string";
+		case CHARACTER: return "char";
+		case INTEGER:   return "integer";
+		case HEX:      return "hex";
+		case REAL:      return "real";
+		case OP:        return "op";
+		case IDENT:     return "ident";
+		case SEP:       return "sep";
+		case KEYWORD:   return "keyword";
 		#include "Keywords.h"
 	}
 }

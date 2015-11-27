@@ -17,11 +17,11 @@ ofstream fout("output.txt");
 string ABTypes(string word)
 {
     if (kws.count(word) != 0)
-        return castType(keyword);
+        return castType(KEYWORD);
     else if (ops.count(word) != 0)
-        return castType(op);
+        return castType(OP);
     else
-        return castType(ident);
+        return castType(IDENT);
 }
 
 class Token
