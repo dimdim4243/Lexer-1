@@ -1,35 +1,6 @@
 #ifndef LEXOGRAPH_LEXER_H
 #define LEXOGRAPH_LEXER_H
 
-struct TokenBuff
-{
-	Token* t;
-	bool empty;
-	TokenBuff();
-	TokenBuff(Token* t);
-	void push(Token* t);
-	Token* pop();
-};
-TokenBuff::TokenBuff()
-{
-	empty = true;
-}
-TokenBuff::TokenBuff(Token* t)
-{
-	this->t = t;
-	empty = false;
-}
-void TokenBuff::push(Token* t)
-{
-	this->t = t;
-	empty = false;
-}
-Token* TokenBuff::pop()
-{
-	empty = true;
-	return t;
-}
-
 class Lexer
 {
 private:
@@ -40,7 +11,7 @@ private:
 	bool end;
 	string lexeme;
 	ifstream fin;
-	TokenBuff buffer;
+	Token* buffer;
 public:
 	Lexer() {};
 	Lexer(string stream);
@@ -52,11 +23,20 @@ public:
     void ReplaceAll(string *str, string from, string to);
 	void SkipWhiteSpaces();
 	Token* GetToken();
+	Token* PopBuffer();
 	Token* Error(string code);
 };
 
+Token* Lexer::PopBuffer()
+{
+	Token* t = buffer;
+	buffer = NULL;
+	return t;
+}
+
 void Lexer :: ReplaceAll(string *str, string from, string to)
 {
+    unsigned int start_pos = 0;
     unsigned int start_pos = 0;
     while((start_pos = (*str).find(from, start_pos)) != std::string::npos) {
         (*str).replace(start_pos, from.length(), to);
@@ -64,7 +44,7 @@ void Lexer :: ReplaceAll(string *str, string from, string to)
     }
 }
 
-Lexer :: Lexer(string file):error(false), end(false), lineCounter(1), columnCounter(0)
+Lexer :: Lexer(string file):error(false), end(false), lineCounter(1), columnCounter(0), buffer(NULL)
 {
 	fin.open(file);
 	NextSym();
@@ -134,7 +114,7 @@ Token* Lexer::Error(string code)
 Token* Lexer::GetToken()
 {
     SkipWhiteSpaces();
-	if (!buffer.empty) return buffer.pop();
+	if (buffer != NULL) return PopBuffer();
 	if (end || error) return NULL;
 	lexeme = "";
     int currLine = lineCounter, currColumn = columnCounter;
@@ -256,7 +236,7 @@ Token* Lexer::GetToken()
 				r = true;
 				if (NextSym() == '.')
 				{
-					buffer.push(new Token(currLine, columnCounter - 1, SEP, ".."));
+					buffer = new Token(currLine, columnCounter - 1, SEP, "..");
 					NextSym();
 					return new TokenVal<int>(currLine, currColumn, INTEGER, lexeme, stoi(lexeme));
 				}
