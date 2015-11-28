@@ -3,6 +3,7 @@
 
 #include <set>
 #include "Token.h"
+#include "lex_defines.h"
 
 using  namespace std;
 
@@ -14,7 +15,7 @@ inline string lower(string a){
 inline set<string> set_kws()
 {
 	set<string> s;
-#include "Keywords.h"
+    Keywords
 	return s;
 }
 #undef kw
@@ -23,7 +24,7 @@ inline set<string> set_kws()
 inline set<string> set_sep()
 {
 	set<string> s;
-#include "Separators.h"
+    Separators
     return s;
 }
 #undef sep
@@ -33,7 +34,7 @@ inline set<string> set_sep()
 inline set<string> set_op()
 {
 	set<string> s;
-#include "Operators.h"
+    Operators
 	return s;
 }
 #undef optr
@@ -56,9 +57,9 @@ enum Types
 	OP,
 	SEP,
 	KEYWORD,
-#include "Keywords.h"
-#include "Operators.h"
-#include "Separators.h"
+    Keywords
+    Operators
+    Separators
 };
 #undef kw
 #undef optr
@@ -68,13 +69,17 @@ enum Types
 #define kw(k) m[#k] = k;
 #define optr(t) m[#t] = t;
 #define sop(s, t) m[#s] = t;
+#define sep(s, t) m[#s] = t;
 inline map<string, Types> mapInit(map<string, Types> m)
 {
-	#include "Keywords.h"
+	Keywords
+    Operators
+    Separators
 };
 #undef kw
 #undef optr
 #undef sop
+#undef sep
 
 
 #endif

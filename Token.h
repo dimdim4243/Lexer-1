@@ -32,7 +32,7 @@ protected:
             case IDENT:     return "ident";
             case SEP:       return "sep";
             case KEYWORD:   return "keyword";
-#include "Keywords.h"
+            Keywords
         }
     }
 #undef kw
