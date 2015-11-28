@@ -17,11 +17,9 @@
 символьна€_литера  Ч #[{число}{шестнадцатеричное_число}]
 строка  Ч '{символ}*'
 */
-#include "Token.h"
+#include "Lexer.h"
 
 using namespace std;
-
-#include "Lexer.h"
 
 int main(int argc, char *argv[])
 {

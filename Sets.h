@@ -1,12 +1,17 @@
 #ifndef LEXOGRAPH_SETS_H
 #define LEXOGRAPH_SETS_H
 
-string lower(string a){
+#include <set>
+#include "Token.h"
+
+using  namespace std;
+
+inline string lower(string a){
 	std::transform(a.begin(), a.end(), a.begin(), ::tolower);
 	return a;
 }
 #define kw(k) s.insert(lower(#k));
-set<string> set_kws()
+inline set<string> set_kws()
 {
 	set<string> s;
 #include "Keywords.h"
@@ -14,9 +19,8 @@ set<string> set_kws()
 }
 #undef kw
 
-
 #define sep(str, t) s.insert(str);
-set<string> set_sep()
+inline set<string> set_sep()
 {
 	set<string> s;
 #include "Separators.h"
@@ -26,7 +30,7 @@ set<string> set_sep()
 
 #define optr(o) s.insert(lower(#o));
 #define sop(r, t) s.insert(r);
-set<string> set_op()
+inline set<string> set_op()
 {
 	set<string> s;
 #include "Operators.h"
@@ -35,24 +39,7 @@ set<string> set_op()
 #undef optr
 #undef sop
 
-set<string> kws = set_kws();
-set<string> ops = set_op();
-set<string> seps = set_sep();
 
-bool isop(string b)
-{
-	return ops.count(b);
-}
-
-bool isop(char b)
-{
-	return isop(string(1, b)) || b == ':';
-}
-
-bool issep(char b)
-{
-    return seps.count(string(1, b));
-}
 
 #define kw(k) k,
 #define optr(t) t,
@@ -81,7 +68,7 @@ enum Types
 #define kw(k) m[#k] = k;
 #define optr(t) m[#t] = t;
 #define sop(s, t) m[#s] = t;
-map<string, Types> mapInit(map<string, Types> m)
+inline map<string, Types> mapInit(map<string, Types> m)
 {
 	#include "Keywords.h"
 };
