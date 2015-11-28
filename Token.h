@@ -19,6 +19,9 @@ protected:
     int column;
     string lexeme;
 #define kw(k) case k: return #k;
+#define optr(k) case k: return #k;
+#define sop(s, k) case k: return s;
+#define sep(s, k) case k: return s;
     static string TypeToString (Types type)
     {
         switch (type)
@@ -33,9 +36,15 @@ protected:
             case SEP:       return "sep";
             case KEYWORD:   return "keyword";
             Keywords
+            Separators
+            Operators
         }
     }
 #undef kw
+#undef optr
+#undef sop
+#undef sep
+
 public:
     Types type;
     static set<string> kws;
