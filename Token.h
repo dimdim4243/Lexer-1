@@ -32,6 +32,7 @@ public:
     Token();
     Token(int line, int column, Types type, string lexeme);
     virtual void  PrintToken ();
+    virtual string ValToString() {}
 };
 
 class TokenError: public Token
@@ -49,6 +50,7 @@ protected:
 public:
     TokenVal(int line, int column, Types type, string lexeme, Value value);
     void PrintToken ();
+    string ValToString();
 };
 
 
@@ -86,6 +88,14 @@ inline void TokenVal<double>::PrintToken()
     << TypeToString(type) <<"\t"
     << lexeme << "\t"
     << buf << "\n";
+}
+
+template <typename Value>
+string TokenVal<Value>::ValToString()
+{
+    stringstream s;
+    s << value;
+    return s.str();
 }
 
 #endif
