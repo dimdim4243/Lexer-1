@@ -13,7 +13,7 @@ private:
 	string lexeme;
 	ifstream fin;
 	Token* buffer;
-	static map<string,Types> typeMap;
+
 public:
 	Lexer();
 	Lexer(string stream);
@@ -24,6 +24,7 @@ public:
 	int static stoi (string s);
 	int static shtoi (string s);
 	double static stor (string s);
+	static map<string,Types> typeMap;
 	Token* GetToken();
 	Token* PopBuffer();
 	Token* Error(string code);

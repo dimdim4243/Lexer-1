@@ -1,4 +1,5 @@
 #include "Token.h"
+#include "Lexer.h"
 
 Token::Token() {}
 set<string> Token::kws = set_kws();
@@ -68,7 +69,7 @@ Types Token::ABTypes(string word)
     if (Token::kws.count(word) != 0)
         return KEYWORD;
     else if (Token::ops.count(word) != 0)
-        return OP;
+        return Lexer::typeMap[word];
     else
         return IDENT;
 }

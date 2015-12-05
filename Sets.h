@@ -8,7 +8,7 @@
 using  namespace std;
 
 inline string lower(string a){
-	std::transform(a.begin(), a.end(), a.begin(), ::tolower);
+	transform(a.begin(), a.end(), a.begin(), ::tolower);
 	return a;
 }
 #define kw(k) s.insert(lower(#k));
@@ -66,8 +66,8 @@ enum Types
 #undef sop
 #undef sep
 
-#define kw(k) m[#k] = k;
-#define optr(k) m[#k] = k;
+#define kw(k) m[lower(#k)] = k;
+#define optr(k) m[lower(#k)] = k;
 #define sop(s, t) m[s] = t;
 #define sep(s, t) m[s] = t;
 inline map<string, Types> mapInit()
