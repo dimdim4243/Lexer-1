@@ -47,7 +47,7 @@ void Token::PrintToken ()
 }
 void Token::init()
 {
-    fout.open("output.txt");
+    fout.open("LexLog.txt");
 }
 void TokenError::PrintToken ()
 {
