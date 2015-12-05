@@ -13,6 +13,7 @@ private:
 	string lexeme;
 	ifstream fin;
 	Token* buffer;
+	static map<string,Types> typeMap;
 public:
 	Lexer();
 	Lexer(string stream);

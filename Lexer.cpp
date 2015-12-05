@@ -1,5 +1,7 @@
 #include "Lexer.h"
 
+map<string, Types> Lexer::typeMap = mapInit();
+
 Lexer::Lexer(){}
 
 Lexer::Lexer(string file):error(false), end(false), lineCounter(1), columnCounter(0), buffer(NULL)
@@ -143,16 +145,16 @@ Token* Lexer::GetToken()
         {
             buff += b;
             NextSym();
-            return new Token(currLine, currColumn, OP, buff);
+            return new Token(currLine, currColumn, typeMap[buff], buff);
         }
         else if (buff[0] == '.' && b == '.')
         {
             NextSym();
-            return new Token(currLine, currColumn, SEP, buff + '.');
+            return new Token(currLine, currColumn, typeMap[buff + '.'], buff + '.');
         }
         else
         {
-            if (buff == ":") return new Token(currLine, currColumn, SEP, buff);
+            if (buff == ":") return new Token(currLine, currColumn, typeMap[buff], buff);
             else if (buff == "/" && b == '/')
             {
                 getline(fin, buff);
@@ -161,7 +163,7 @@ Token* Lexer::GetToken()
                 NextSym();
                 return GetToken();
             }
-            return new Token(currLine, currColumn, OP, buff);
+            return new Token(currLine, currColumn, typeMap[buff], buff);
         }
     }
     else if(Token::issep(b))
@@ -186,7 +188,7 @@ Token* Lexer::GetToken()
                 SkipWhiteSpaces();
             }
         }
-        return new Token(currLine, currColumn, SEP, s);
+        return new Token(currLine, currColumn, typeMap[s], s);
     }
     else if (b == '{')
     {

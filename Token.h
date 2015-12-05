@@ -17,35 +17,9 @@ protected:
     static ofstream fout;
     int line;
     int column;
-    string lexeme;
-#define kw(k) case k: return #k;
-#define optr(k) case k: return #k;
-#define sop(s, k) case k: return s;
-#define sep(s, k) case k: return s;
-    static string TypeToString (Types type)
-    {
-        switch (type)
-        {
-            case STRING:    return "string";
-            case CHARACTER: return "char";
-            case INTEGER:   return "integer";
-            case HEX:       return "hex";
-            case REAL:      return "real";
-            case OP:        return "op";
-            case IDENT:     return "ident";
-            case SEP:       return "sep";
-            case KEYWORD:   return "keyword";
-            Keywords
-            Separators
-            Operators
-        }
-    }
-#undef kw
-#undef optr
-#undef sop
-#undef sep
-
+    static string TypeToString (Types type);
 public:
+    string lexeme;
     Types type;
     static set<string> kws;
     static set<string> ops;

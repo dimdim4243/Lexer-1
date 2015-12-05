@@ -67,14 +67,16 @@ enum Types
 #undef sep
 
 #define kw(k) m[#k] = k;
-#define optr(t) m[#t] = t;
-#define sop(s, t) m[#s] = t;
-#define sep(s, t) m[#s] = t;
-inline map<string, Types> mapInit(map<string, Types> m)
+#define optr(k) m[#k] = k;
+#define sop(s, t) m[s] = t;
+#define sep(s, t) m[s] = t;
+inline map<string, Types> mapInit()
 {
+	map<string, Types> m;
 	Keywords
     Operators
     Separators
+	return m;
 };
 #undef kw
 #undef optr
