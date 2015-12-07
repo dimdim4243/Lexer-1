@@ -67,7 +67,7 @@ TokenError::TokenError(int line, int column, string error)
 Types Token::ABTypes(string word)
 {
     if (Token::kws.count(word) != 0)
-        return KEYWORD;
+        return Lexer::typeMap[word];
     else if (Token::ops.count(word) != 0)
         return Lexer::typeMap[word];
     else
