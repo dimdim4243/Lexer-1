@@ -15,10 +15,10 @@ class Token
 {
 protected:
     static ofstream fout;
+public:
     int line;
     int column;
     static string TypeToString (Types type);
-public:
     string lexeme;
     Types type;
     static set<string> kws;
