@@ -49,6 +49,7 @@ protected:
     Value value;
 public:
     TokenVal(int line, int column, Types type, string lexeme, Value value);
+    Value GetValue();
     void PrintToken ();
     string ValToString();
 };
@@ -96,6 +97,12 @@ string TokenVal<Value>::ValToString()
     stringstream s;
     s << value;
     return s.str();
+}
+
+template <typename Value>
+inline Value TokenVal<Value>::GetValue()
+{
+    return value;
 }
 
 #endif
